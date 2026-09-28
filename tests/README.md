@@ -7,6 +7,8 @@
 | `make_checklist.py` | Regenerates `scenarios.md` from the YAML. |
 | `run_scenarios.py` | Plays each call against the model and writes a review sheet to `tests/reports/` (gitignored). |
 | `check_prompt_sync.py` | Fails if the Tier 1 and Tier 2 safety wording in the prompt and in `docs/call-flow.md` stop matching. |
+| `validate_config.py` | Validates every client config against `backend/config_schema.py`. Exit 1 on any error. |
+| `test_validate_config.py` | Proof tests: every rejection rule triggers, and a clean config passes. `python -m unittest tests/test_validate_config.py -v` |
 
 ## Typical workflow
 

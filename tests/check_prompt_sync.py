@@ -10,6 +10,13 @@ It checks:
   3. The roof-leak electrics question and both no-heat questions are present,
      so deleting a row can't silently pass.
 
+Known limits (by design; behavior is tested by the scenarios, not here):
+  - TODO(me): one-way for Tier 1. A call-flow line missing from the prompt
+    fails, but an EXTRA Tier 1-style line in the prompt doesn't. Add a
+    reverse check if you want full two-way coverage.
+  - Checks exact wording only. Rules like "unclear counts as yes" and "when
+    unsure, choose the higher tier" are checked by test scenarios E06-E09.
+
 Run it from the repo root:   python tests/check_prompt_sync.py
 Exit code 0 = in sync, 1 = drift found. Stdlib only, no installs needed.
 """

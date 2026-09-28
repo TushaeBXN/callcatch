@@ -36,3 +36,15 @@ repos:
         language: system
         files: ^(prompts/base_system_prompt\.md|docs/call-flow\.md|tests/check_prompt_sync\.py)$
         pass_filenames: false
+
+      # Rejects any client config that breaks the rules in backend/config_schema.py.
+      # Runs when a config, the schema, or the validator changes. It validates
+      # ALL configs, so a schema change can't silently break an existing client.
+      # Uses the active Python, so your .venv must be on (it needs pyyaml).
+      # If pyyaml is missing, the commit is BLOCKED (fail closed) with a message.
+      - id: validate-client-configs
+        name: Client configs are valid
+        entry: python3 tests/validate_config.py
+        language: system
+        files: ^(clients/[^/]+/config\.yaml|backend/config_schema\.py|tests/validate_config\.py)$
+        pass_filenames: false

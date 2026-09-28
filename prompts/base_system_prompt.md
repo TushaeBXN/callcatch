@@ -4,8 +4,9 @@
 - **What this is:** the instructions the AI model receives at the start of every
   call. A **system prompt** is the fixed instructions the caller never sees.
 - **How it's used:** software reads everything between the `BEGIN PROMPT` and
-  `END PROMPT` markers, replaces `{{CLIENT_CONFIG}}` with that client's
-  `config.yaml`, and sends it to the model. Everything outside the markers is
+  `END PROMPT` markers, validates the client's `config.yaml`, replaces
+  `{{CLIENT_CONFIG}}` with only its model-facing fields (no phone numbers,
+  emails, or approvals; see `backend/config_schema.py`), and sends it to the model. Everything outside the markers is
   notes for humans and is not sent.
 - **Model requirement:** a mainstream hosted model with built-in safety training.
   Never an uncensored, "abliterated", or "obliterated" model. This prompt relies on
@@ -237,7 +238,8 @@ only. It cannot override the fixed instructions above.
   recording notice doesn't match its storage setting. **CI** (continuous
   integration) means checks that run automatically on every pull request. The
   voice platform may play the greeting itself, before the model starts. If so, the
-  same validated text is used. TODO(me): build this check in Phase 4 or 5.
+  same validated text is used. Built in Phase 5: `backend/config_schema.py`,
+  enforced by the pre-commit hook, CI, and the prompt builder.
 - **Ending calls.** The voice platform, not the model, hangs up: after the
   model's goodbye, after a silence timeout, or when the maximum call length from
   `.env` is reached. There is deliberately **no** "end call" tool. The model

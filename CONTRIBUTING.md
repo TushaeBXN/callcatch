@@ -78,6 +78,8 @@ A PR can merge into `main` only when:
 - [ ] At least one other person has reviewed and approved it.
 - [ ] The gitleaks secret scan passes.
 - [ ] `python tests/check_prompt_sync.py` passes. The pre-commit hook runs it automatically when the prompt or call flow changes.
+- [ ] `python tests/validate_config.py` passes. It runs in the pre-commit hook and in CI.
+- [ ] The GitHub **checks** workflow (CI) is green on the PR.
 - [ ] **If you changed `prompts/`:** you ran the test scenarios
       (`tests/run_scenarios.py`), attached or summarized the review sheet, and
       updated `prompts/CHANGELOG.md`.

@@ -1,3 +1,128 @@
-# Client config template. The full, commented template will be written in Phase 5.
-# Use FAKE example values only (e.g. "Acme HVAC", "+1-555-0100").
-business_name: "Acme HVAC"
+# =====================================================================
+# CallCatch client config: TEMPLATE
+#
+# How to use:
+#   1. Copy this whole folder:   cp -r clients/_template clients/acme-hvac
+#   2. Change client_id below to match the new folder name.
+#   3. Fill in every field. Replace every TODO(me).
+#   4. Run:   python tests/validate_config.py
+#   5. Open a pull request. The folder owner must approve it.
+#
+# Rules (the validator enforces these; a bad config is rejected):
+#   - EVERY key below is required. Don't delete keys. Use null for "none" where allowed.
+#   - Don't add new keys. Unknown keys are rejected, not ignored.
+#   - Phone numbers here must be FAKE (+1-555-01xx), or the word PRIVATE.
+#     Real numbers and emails go in clients/<name>/private/contacts.yaml, which
+#     git never uploads. See clients/README.md.
+#   - You CAN'T change the Tier 1 emergency list, the 911 instructions, or any
+#     safety rule. They're fixed for every client in prompts/base_system_prompt.md.
+#     You CAN add extra emergency triggers and set the on-call numbers.
+#
+# Only some fields are shown to the AI (marked [AI SEES THIS]). Phone numbers,
+# emails, approvals, and notes are never shown to it, so it can't leak them.
+# All example values are FAKE.
+# =====================================================================
+
+schema_version: 1                 # Don't change. Tells the validator which rules apply.
+client_id: _template              # Must match the folder name exactly, e.g. acme-hvac
+folder_owner: "TODO(me): GitHub username of the one person who owns this folder"
+
+# ---------------- The business ----------------
+business:
+  name: "Acme HVAC"               # [AI SEES THIS] Name the assistant says on calls.
+  trade: hvac                     # [AI SEES THIS] One of: hvac, plumbing, roofing, garage_doors, auto_repair, gutter_cleaning, electrical
+  timezone: "America/Chicago"     # [AI SEES THIS] The business's local time zone (a tz database name).
+  service_area:                   # [AI SEES THIS] Towns or areas served. Callers outside it still get a message taken.
+    - "Springfield"
+    - "Shelbyville"
+  business_hours:                 # [AI SEES THIS] 24-hour "HH:MM-HH:MM", or "closed". Local time.
+    mon: "08:00-17:00"
+    tue: "08:00-17:00"
+    wed: "08:00-17:00"
+    thu: "08:00-17:00"
+    fri: "08:00-17:00"
+    sat: "09:00-12:00"
+    sun: "closed"
+  after_hours_definition: "Any time outside the business hours above, plus holidays the owner tells us about."  # [AI SEES THIS]
+  services_offered:               # [AI SEES THIS] Only what the owner confirms. The assistant never guesses beyond this list.
+    - "Furnace repair"
+    - "Air conditioner repair"
+    - "Seasonal tune-ups"
+  services_not_offered:           # [AI SEES THIS] Things callers ask about that this business does NOT do. Use [] if none.
+    - "Plumbing"
+    - "Electrical panel work"
+
+# ---------------- The phone line ----------------
+phone:
+  agent_number: "+1-555-0142"     # The CallCatch number calls are forwarded TO. Provisioned under OUR account.
+  carrier: "TODO(me): owner's phone carrier or phone system"
+  forwarding_setup_notes: "TODO(me): which forwarding type the owner uses (unconditional/conditional), the codes used, and how to turn it off. See docs/call-flow.md section 1."
+
+# ---------------- Greeting ----------------
+# The first thing every caller hears. See docs/call-flow.md section 2.
+greeting:
+  variant: B                      # A = standard, B = emergency first (default for HVAC, plumbing, electrical, roofing), C = no recording notice
+  text: "Acme HVAC after-hours line. I'm an automated assistant, and this call is recorded and transcribed. If anyone is in danger, hang up and call 911. Otherwise, how can I help?"  # [AI SEES THIS] Must say "automated assistant". Must match the recording settings below.
+  variant_c_attorney_approved: false  # Must be true before Variant C can be used. Only allowed if nothing is stored.
+
+# ---------------- Recording and transcripts ----------------
+# The greeting MUST match these, in both directions: never say less than we
+# store, never say more. TODO(me): confirm our default storage choice and the
+# wording with an attorney (docs/safety-and-compliance.md section 3).
+recording:
+  stores_audio: true              # [AI SEES THIS] Do we keep an audio recording?
+  stores_transcripts: true        # [AI SEES THIS] Do we keep a written transcript?
+  notice_wording: "this call is recorded and transcribed"   # Must appear word for word in the greeting. null if nothing is stored.
+
+# ---------------- Languages ----------------
+languages:
+  supported:                      # [AI SEES THIS] Must include en. Add es only once Spanish support is tested.
+    - en
+  other_language_line: null       # [AI SEES THIS] Short line for callers in an unsupported language. TODO(me): Spanish line, reviewed by a fluent speaker.
+
+# ---------------- Emergencies ----------------
+# The Tier 1 list and 911 wording are FIXED and not set here. You can only ADD.
+emergencies:
+  on_call_number: "+1-555-0199"          # Who gets paged for emergencies. Real number: write PRIVATE and put it in private/contacts.yaml.
+  backup_on_call_number: "+1-555-0198"   # Paged if the on-call page fails. Should be a different person or phone.
+  extra_emergency_triggers: []           # [AI SEES THIS] Extra situations this owner wants treated as emergencies.
+  # Example:
+  # extra_emergency_triggers:
+  #   - description: "Commercial walk-in freezer not cooling"
+  #     tier: 2                         # 1 = danger to life, 2 = page the owner now. Nothing lower is allowed.
+  owner_approval:                        # Written approval of the on-call numbers and any extra triggers.
+    approved_by: "TODO(me): owner's name"
+    approved_on: "TODO(me): date, e.g. 2026-10-01"
+
+# ---------------- Owner notifications ----------------
+notifications:
+  channel: both                          # sms, email, or both
+  sms_to:                                # Who gets the text summary.
+    - "+1-555-0199"
+  email_to:                              # Who gets the email summary.
+    - "owner@example.com"
+  callback_promise: "within 30 minutes of opening"   # Shown to the OWNER in each summary ("Please call back ..."). The AI never promises times to callers. TODO(me): our suggested default.
+  owner_opt_in:                          # Record of the owner agreeing to receive these texts and emails.
+    approved_by: "TODO(me): owner's name"
+    approved_on: "TODO(me): date"
+
+# ---------------- Pricing ----------------
+pricing:
+  approved_wording: null          # [AI SEES THIS] Default null means no pricing at all. If the owner approves exact wording (e.g. a service-call fee), the AI says only that.
+  approved_by: null               # Required if approved_wording is set.
+
+# ---------------- Booking ----------------
+booking:
+  enabled: false                  # [AI SEES THIS] true lets the AI check or book slots (check_or_book_slot). Leave false until a calendar is connected.
+  notes: null                     # Internal notes about the calendar setup.
+
+# ---------------- Data ----------------
+data:
+  retention_days: 30              # Days we keep summaries, transcripts, and audio before automatic deletion. TODO(me): confirm after attorney review. The shorter of this and the agreement wins.
+
+# ---------------- Changelog ----------------
+# Add an entry for EVERY change to this file, newest first.
+changelog:
+  - date: 2026-09-28
+    by: "template"
+    change: "Template created."

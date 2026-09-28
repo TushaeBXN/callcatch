@@ -9,7 +9,8 @@ Application code. Right now it holds only what the test runner needs.
 | `adapters/anthropic_adapter.py` | Talks to Claude using the official `anthropic` SDK. Reads `LLM_API_KEY` and `LLM_MODEL` from `.env`, and never prints them. |
 | `adapters/__init__.py` | `get_llm_adapter()` picks an adapter based on `LLM_PROVIDER` in `.env`. |
 | `tools.py` | The three tool definitions: `save_message`, `notify_owner`, `check_or_book_slot`. No others. |
-| `prompt_builder.py` | Builds the system prompt (base prompt plus client config) and loads `.env`. |
+| `prompt_builder.py` | Builds the system prompt (base prompt plus the model-facing part of the client config) and loads `.env`. Refuses an invalid config. |
+| `config_schema.py` | The client config rules. Fails closed: unknown keys, safety changes, or disclosure mismatches are rejected. |
 
 **Adding another LLM provider:** write a new class in `adapters/` that inherits
 from `LLMAdapter`, then add it to `get_llm_adapter()`. No other code should

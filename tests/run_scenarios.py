@@ -37,7 +37,7 @@ except ImportError:
     sys.exit("PyYAML isn't installed. Inside your virtual environment run: pip install pyyaml")
 
 from backend.adapters import MissingSettingError, ToolResult, get_llm_adapter
-from backend.prompt_builder import TEMPLATE_CONFIG, build_system_prompt, load_dotenv
+from backend.prompt_builder import TEMPLATE_CONFIG, ConfigError, build_system_prompt, load_dotenv
 from backend.tools import TOOLS
 
 SCENARIOS_FILE = REPO_ROOT / "tests" / "scenarios.yaml"
@@ -193,7 +193,10 @@ def main():
     scenarios = load_scenarios(args)
     if not scenarios:
         sys.exit("No scenarios matched your filters.")
-    system_prompt = build_system_prompt(Path(args.config))   # also checks the prompt markers
+    try:
+        system_prompt = build_system_prompt(Path(args.config))   # validates the config and prompt markers
+    except ConfigError as e:
+        sys.exit(f"\nRefusing to run: {e}\n\nCheck it with: python tests/validate_config.py {args.config}")
 
     provider = os.environ.get("LLM_PROVIDER", "stub").strip().lower()
     max_turns = int(os.environ.get("MAX_LLM_TURNS_PER_CALL", "30"))

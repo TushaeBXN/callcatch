@@ -236,8 +236,8 @@ Cybersecurity Framework (CSF) 2.0 is approximate. VERIFY.
 
 | ID | Control | Evidence | Owner | CSF 2.0 function |
 |---|---|---|---|---|
-| C-01 | AI disclosure on every call | Greeting in each config, plus test scenarios | Founder | Govern |
-| C-02 | Recording notice matches what we store | Config field, plus a storage-settings review | Founder | Govern |
+| C-01 | AI disclosure on every call | Validator rejects greetings without it, plus test scenarios | Founder | Govern |
+| C-02 | Recording notice matches what we store | `backend/config_schema.py` rejects mismatches in both directions (pre-commit, CI, prompt builder), plus `tests/test_validate_config.py` | Founder | Govern |
 | C-03 | No automated outbound contact to consumers in v1 | Architecture doc, and no outbound code paths | Founder | Govern |
 | C-04 | Data minimization (six fields) | Base prompt section 5, plus test scenarios | Prompt owner | Protect |
 | C-05 | Retention limits and automatic deletion | Storage expiry settings | TODO(me) | Protect |

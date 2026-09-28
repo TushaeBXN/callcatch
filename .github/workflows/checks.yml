@@ -1,0 +1,46 @@
+# ------------------------------------------------------------
+# CI: runs on every pull request and every push to main.
+# "CI" (continuous integration) means GitHub runs these checks automatically,
+# so they run even if someone's local pre-commit hook didn't.
+#
+# After the first push: in GitHub Settings -> Branches, make the "checks"
+# job a REQUIRED status check for main, so a PR can't merge if it fails.
+#
+# No secrets are used here, and no model is called (dry run only).
+# VERIFY: the action versions below (checkout@v4, setup-python@v5) are still
+# current. See github.com/actions/checkout and github.com/actions/setup-python.
+# ------------------------------------------------------------
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies (no model SDK needed)
+        run: pip install pyyaml
+
+      - name: Client configs are valid (fail closed)
+        run: python tests/validate_config.py
+
+      - name: Config validator proof tests
+        run: python -m unittest tests/test_validate_config.py -v
+
+      - name: Prompt and call-flow safety wording match
+        run: python tests/check_prompt_sync.py
+
+      - name: Scenario runner plumbing (dry run, no network)
+        run: python tests/run_scenarios.py --dry-run
