@@ -88,7 +88,22 @@ same file). So the storage choice comes first.
 |---|---|---|---|
 | 6.1 | Run `python tests/validate_config.py --require-private clients/client-name/config.yaml`. It must print **"All configs valid."** Any `ERROR` line, including an unfinished `TODO(me)` or a missing approval, blocks go-live. | Folder owner | [ ] |
 | 6.2 | Open a PR. The pre-commit hook and CI run the same validation. A reviewer approves. | Folder owner | [ ] |
-| 6.3 | Run a scenario check against this client's config: `python tests/run_scenarios.py --config clients/client-name/config.yaml --only E01 F01 I05 P01`. Review the sheet. | Folder owner | [ ] |
+| 6.3 | **Scenario check against this client's real config.** Run the baseline set plus the Tier 1 and Tier 2 scenarios for this client's trade (table below). For example, for HVAC: `python tests/run_scenarios.py --config clients/client-name/config.yaml --only E01 E02 E08 E09 F01 I05 P01`. Every Tier 1 / Tier 2 scenario must PASS on review. | Folder owner | [ ] |
+| 6.4 | **Client-specific emergencies:** for each entry in `extra_emergency_triggers`, write a scenario in `clients/client-name/scenarios.yaml` (tracked, fake details only, IDs like `C01`), with the caller describing that situation. Run it with the others: add `--scenarios tests/scenarios.yaml clients/client-name/scenarios.yaml`. It must page with priority emergency, and say the Tier 1 line if the trigger is Tier 1. | Folder owner | [ ] |
+
+**Which scenarios to run in 6.3.** Always run the baseline: `E01` (gas, which is Tier 1 in every trade), `F01` (page fails), `I05` ("I'm the owner"), and `P01` (price pressure). Then add the rows for this client's trade:
+
+| Trade | Add these | Why |
+|---|---|---|
+| hvac | `E02 E08 E09` | Carbon monoxide; both no-heat question paths |
+| plumbing | `E04 E06` | Water near electrics (Tier 1); burst pipe (electrics question) |
+| roofing | `E07 N03` | Roof leak near a fixture (unclear, so Tier 1); no water inside (routine) |
+| electrical | `E03` | Sparking or burning smell |
+| garage_doors | `P02 E05` | Home not secure; person hurt |
+| auto_repair | `E10` | Broken down on a highway |
+| gutter_cleaning | `E05 E07` | Fall from a ladder; roof leak |
+
+**Note: the runner simulates every tool.** No scenario sends a real page, so step 6 checks what the assistant *says and decides*. Whether the real on-call phone actually rings is tested live in step 7.4.
 
 ### Step 7 — Number, forwarding, and staging test
 | # | Task | Who owns this step | Done |
@@ -96,8 +111,9 @@ same file). So the storage choice comes first.
 | 7.1 | Provision the agent number **under our company account**, never the owner's. Put the real number in `private/contacts.yaml`. Number ownership follows the agreement (`docs/service-agreement-outline.md`). | Tech | [ ] |
 | 7.2 | Test the whole flow on the **staging** number first, with real calls from a phone that isn't the business line. | Tech | [ ] |
 | 7.3 | On staging, test the **voicemail fallback**: make the AI unavailable, and confirm the caller hears the recorded message and can leave voicemail, and that the owner gets it. This can't be tested by the scenario runner. | Tech | [ ] |
-| 7.4 | Set up forwarding on the owner's line to the agent number, using the carrier table in `docs/call-flow.md` section 1. Fill in the table's "Verified on" column. Record the method and **how to turn it off** in `phone.forwarding_setup_notes`. | Tech, with the owner | [ ] |
-| 7.5 | Make a test call to the owner's business number during the forwarding window, and confirm it reaches CallCatch. | Tech | [ ] |
+| 7.4 | **Live emergency page test, real numbers.** On staging, with this client's real `private/contacts.yaml`, place a Tier 1 test call (say "I smell gas, this is a test"). Confirm: (a) the page reaches the **real on-call number** and the person confirms receiving it; (b) the assistant said "I've alerted the on-call team" only after delivery was confirmed. Then make the primary page fail on purpose (e.g. use a temporary unreachable on-call number on staging) and confirm (c) the **backup number** is paged and (d) the assistant said "I'll get this to the team right away" instead. Record the date and results in the client's changelog. | Tech, with the on-call person | [ ] |
+| 7.5 | Set up forwarding on the owner's line to the agent number, using the carrier table in `docs/call-flow.md` section 1. Fill in the table's "Verified on" column. Record the method and **how to turn it off** in `phone.forwarding_setup_notes`. | Tech, with the owner | [ ] |
+| 7.6 | Make a test call to the owner's business number during the forwarding window, and confirm it reaches CallCatch. | Tech | [ ] |
 
 ### Step 8 — Owner walkthrough
 | # | Task | Who owns this step | Done |

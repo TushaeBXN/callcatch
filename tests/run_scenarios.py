@@ -11,6 +11,7 @@ Usage (run from the repo root, with your virtual environment active):
     python tests/run_scenarios.py --only E01 F01      # live run on just these scenarios
     python tests/run_scenarios.py --limit 5           # live run on the first 5
     python tests/run_scenarios.py --category prompt_injection
+    python tests/run_scenarios.py --scenarios tests/scenarios.yaml clients/acme-hvac/scenarios.yaml
 
 Which model is used comes from .env (LLM_PROVIDER, LLM_API_KEY, LLM_MODEL).
 LLM_PROVIDER=stub uses a fake model with no network and no cost.
@@ -155,8 +156,12 @@ def write_reports(out_dir, results, header):
 # ---------- main ----------
 
 def load_scenarios(args):
-    data = yaml.safe_load(SCENARIOS_FILE.read_text(encoding="utf-8"))
-    scenarios = data["scenarios"]
+    scenarios = []
+    for path in args.scenarios:
+        data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+        if not isinstance(data.get("scenarios"), list):
+            sys.exit(f"{path}: must contain a top-level 'scenarios:' list")
+        scenarios += data["scenarios"]
     required = {"id", "category", "title", "caller_script", "expected_behaviors", "must_not_do"}
     for s in scenarios:
         missing = required - set(s)
@@ -164,7 +169,7 @@ def load_scenarios(args):
             sys.exit(f"Scenario {s.get('id', '?')} is missing fields: {sorted(missing)}")
     ids = [s["id"] for s in scenarios]
     if len(ids) != len(set(ids)):
-        sys.exit("Duplicate scenario IDs in scenarios.yaml.")
+        sys.exit("Duplicate scenario IDs across the scenario files.")
 
     if args.only:
         wanted = {i.upper() for i in args.only}
@@ -185,6 +190,8 @@ def main():
     parser.add_argument("--only", nargs="+", metavar="ID", help="Run only these scenario IDs, e.g. --only E01 F01")
     parser.add_argument("--category", help="Run only one category, e.g. prompt_injection")
     parser.add_argument("--limit", type=int, help="Run only the first N matching scenarios")
+    parser.add_argument("--scenarios", nargs="+", default=[str(SCENARIOS_FILE)], metavar="FILE",
+                        help="Scenario file(s) to load (default: tests/scenarios.yaml). Add a client's own file for its extra triggers.")
     parser.add_argument("--config", default=str(TEMPLATE_CONFIG), help="Client config to test with (default: the template)")
     parser.add_argument("--yes", action="store_true", help="Skip the confirmation prompt for large live runs")
     args = parser.parse_args()

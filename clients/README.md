@@ -8,6 +8,7 @@ clients/
     config.yaml
   acme-hvac/            <- one folder per client (folder name = client_id)
     config.yaml         <- settings, tracked in git, FAKE or PRIVATE contact values only
+    scenarios.yaml      <- optional: test calls for this client's extra emergency triggers (fake details)
     private/            <- gitignored, never uploaded. Real contact details live here.
       contacts.yaml
 ```

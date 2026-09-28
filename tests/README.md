@@ -27,6 +27,10 @@ python tests/run_scenarios.py --only E01 F01 I01
 ```
 A live run on three scenarios. Needs `LLM_PROVIDER=anthropic`, a key, and a model in `.env`. Costs a little.
 
+For a client's own extra-trigger scenarios, add their file:
+`--scenarios tests/scenarios.yaml clients/client-name/scenarios.yaml`
+(see `docs/onboarding.md` step 6.4).
+
 Then open the newest `tests/reports/<date-time>/review.md`, read each
 transcript, and fill in PASS or FAIL.
 
