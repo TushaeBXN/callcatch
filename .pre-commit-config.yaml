@@ -1,0 +1,27 @@
+# ------------------------------------------------------------
+# .pre-commit-config.yaml
+#
+# "pre-commit" is a tool that runs checks automatically every time you
+# run `git commit`. If a check fails, the commit is blocked.
+#
+# The check below is gitleaks, a secret scanner. It looks for things
+# that resemble API keys or passwords and stops you from committing them.
+#
+# One-time setup (run inside your virtual environment):
+#   pip install pre-commit      # installs the pre-commit tool
+#   pre-commit install          # connects it to this repo's git commits
+#   pre-commit run --all-files  # optional: scan every file right now
+#
+# Config taken from the gitleaks README (github.com/gitleaks/gitleaks),
+# read on 2026-09-28. The README example pinned v8.24.2; the latest
+# release shown at that time was v8.30.1, which is used here.
+# VERIFY: Run `pre-commit autoupdate` to move to the newest release.
+#
+# Do NOT skip this hook (SKIP=gitleaks) unless a maintainer has
+# confirmed the flagged text is a false alarm.
+# ------------------------------------------------------------
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks

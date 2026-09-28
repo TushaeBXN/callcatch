@@ -1,0 +1,3 @@
+# Client config template. The full, commented template will be written in Phase 5.
+# Use FAKE example values only (e.g. "Acme HVAC", "+1-555-0100").
+business_name: "Acme HVAC"

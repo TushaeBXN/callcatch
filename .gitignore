@@ -1,0 +1,59 @@
+# ------------------------------------------------------------
+# .gitignore — files git must NEVER track.
+# If you're unsure whether a file belongs in the repo, ask first.
+# ------------------------------------------------------------
+
+# --- Secrets (never commit these) ---
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# --- Call data (never commit these) ---
+transcripts/
+recordings/
+clients/*/private/
+
+# --- Local test output (may contain model responses) ---
+tests/reports/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# --- Node ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Terraform (infra/) ---
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# --- Editors ---
+.vscode/
+.idea/
+*.swp
