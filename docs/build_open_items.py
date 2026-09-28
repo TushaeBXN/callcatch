@@ -96,7 +96,9 @@ KNOWN_TEST_CARDS = {"4111111111111111"}   # Visa's published test number
 def scan(files):
     findings = []
     for path in files:
-        if path in SELF:
+        # Skip this script and its own output: open-items.md quotes past findings,
+        # so scanning it would re-flag those quotes on every rebuild.
+        if path in SELF or path == "docs/open-items.md":
             continue
         try:
             text = (ROOT / path).read_text(encoding="utf-8")
