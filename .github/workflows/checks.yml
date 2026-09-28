@@ -44,3 +44,6 @@ jobs:
 
       - name: Scenario runner plumbing (dry run, no network)
         run: python tests/run_scenarios.py --dry-run
+
+      - name: Unit-economics calculator runs (fake example)
+        run: python docs/unit_economics.py
