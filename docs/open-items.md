@@ -9,7 +9,7 @@ python docs/build_open_items.py
 ```
 
 Generated copies (`tests/scenarios.md`, `docs/unit-economics.md`) are skipped. Their sources are listed instead.
-In Python files, only comments and docstrings count. **Totals: 119 `TODO(me)`, 111 `VERIFY`.**
+In Python files, only comments and docstrings count. **Totals: 118 `TODO(me)`, 110 `VERIFY`.**
 
 ## Blockers before any real client
 
@@ -46,7 +46,7 @@ These must be resolved before **any real client goes live**. Each is also in the
 
 | Phase | Files | Lines with items |
 |---|---|---|
-| Phase 1: Repo and guardrails | 8 | 21 |
+| Phase 1: Repo and guardrails | 8 | 20 |
 | Phase 2: Call flow | 1 | 29 |
 | Phase 3: Prompt and safety | 3 | 47 |
 | Phase 4: Tests and adapters | 2 | 2 |
@@ -77,11 +77,10 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L72](../CONTRIBUTING.md#L72): the same time. TODO(me): decide how ownership is recorded and handed over.
 
 ### `README.md`
-- [ ] [L43](../README.md#L43): `docs/open-items.md` / Every `TODO(me):` and `VERIFY:` in one list. /
-- [ ] [L47](../README.md#L47): `TODO(me):` — a decision or fill-in the founder must make.
-- [ ] [L48](../README.md#L48): `VERIFY:` — a fact that may be out of date (pricing, laws, carrier codes).
-- [ ] [L56](../README.md#L56): VERIFY: check the current stable version at python.org.
-- [ ] [L58](../README.md#L58): > **macOS + python.org Python:** if you see `CERTIFICATE_VERIFY_FAILED`, run the
+- [ ] [L99](../README.md#L99): `TODO(me):` — a decision or fill-in the founder must make.
+- [ ] [L100](../README.md#L100): `VERIFY:` — a fact that may be out of date (pricing, laws, carrier codes).
+- [ ] [L108](../README.md#L108): VERIFY: check the current stable version at python.org.
+- [ ] [L110](../README.md#L110): > **macOS + python.org Python:** if you see `CERTIFICATE_VERIFY_FAILED`, run the
 
 ### `SECURITY.md`
 - [ ] [L10](../SECURITY.md#L10): make the assistant misbehave), email **[EMAIL]** <!-- TODO(me): set a monitored security address, e.g. security@yourdomain -->.
