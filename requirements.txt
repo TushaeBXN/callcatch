@@ -1,0 +1,4 @@
+# Install inside your virtual environment:  pip install -r requirements.txt
+pyyaml        # reads the YAML scenario and config files
+pre-commit    # runs the gitleaks secret scan on every commit
+anthropic     # official Anthropic SDK, only needed for LIVE test runs (not --dry-run or the stub)
