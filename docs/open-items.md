@@ -9,7 +9,7 @@ python docs/build_open_items.py
 ```
 
 Generated copies (`tests/scenarios.md`, `docs/unit-economics.md`) are skipped. Their sources are listed instead.
-In Python files, only comments and docstrings count. **Totals: 118 `TODO(me)`, 110 `VERIFY`.**
+In Python files, only comments and docstrings count. **Totals: 120 `TODO(me)`, 112 `VERIFY`.**
 
 ## Blockers before any real client
 
@@ -22,8 +22,8 @@ These must be resolved before **any real client goes live**. Each is also in the
 3. **Default storage choice** (audio and/or transcripts). It drives the greeting's recording notice.
 4. **Retention periods** (`data.retention_days` default, `MAX_RETENTION_DAYS`, log retention).
 5. **Security contact:** replace `[EMAIL]` in `SECURITY.md`.
-6. **SMS sender registration** for owner notifications (VERIFY, `docs/safety-and-compliance.md` section 4).
-7. **Voice platform chosen**, plus real tool implementations with confirmed-delivery paging, retry, and backup (`docs/roadmap.md` section 1).
+6. **A2P 10DLC registration with Twilio**: decided (treat as required), **not yet started**. Start now, since review takes calendar time (`docs/decisions/0001-twilio-and-a2p-10dlc.md`).
+7. **Twilio chosen as voice and SMS platform.** Still to build: the voice adapter, plus real tool implementations with confirmed-delivery paging, retry, and backup (`docs/roadmap.md` section 1).
 8. **Branch protection and the required CI check** on GitHub (manual, see the Phase 1 notes).
 
 ## Resolved or partly resolved during review
@@ -54,7 +54,8 @@ These must be resolved before **any real client goes live**. Each is also in the
 | Phase 6: Onboarding and offboarding | 2 | 8 |
 | Phase 7: Service agreement | 1 | 33 |
 | Phase 8: Unit economics | 2 | 29 |
-| Phase 9: Architecture, monitoring, roadmap | 3 | 17 |
+| Phase 9: Architecture, monitoring, roadmap | 3 | 15 |
+| Decisions | 1 | 5 |
 
 ## Phase 1: Repo and guardrails
 
@@ -145,33 +146,33 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L78](../docs/safety-and-compliance.md#L78): automated calls and texts to consumers. VERIFY all points with an attorney.
 - [ ] [L81](../docs/safety-and-compliance.md#L81): generally lower risk than outbound contact. VERIFY.
 - [ ] [L84](../docs/safety-and-compliance.md#L84): written opt-in during onboarding. VERIFY whether any consent formalities apply.
-- [ ] [L85](../docs/safety-and-compliance.md#L85): VERIFY: sending business SMS in the US, even to owners who opted in, generally
-- [ ] [L93](../docs/safety-and-compliance.md#L93): callback is the business's own contact. VERIFY: confirm this is outside our
-- [ ] [L97](../docs/safety-and-compliance.md#L97): consent rules changed in 2024–2025. VERIFY: current status before building
-- [ ] [L121](../docs/safety-and-compliance.md#L121): VERIFY: we're probably not covered by HIPAA (the US health-privacy law for
-- [ ] [L127](../docs/safety-and-compliance.md#L127): TODO(me): decide whether we automatically remove card-like numbers from
-- [ ] [L134](../docs/safety-and-compliance.md#L134): Call summary (message) / Our store, per client / TODO(me) days / Automatic expiry /
-- [ ] [L135](../docs/safety-and-compliance.md#L135): Transcript / Our store, per client / TODO(me) days / Automatic expiry /
-- [ ] [L136](../docs/safety-and-compliance.md#L136): Audio recording (if kept) / Our store, per client / TODO(me) days, or don't keep it / Automatic expiry /
-- [ ] [L137](../docs/safety-and-compliance.md#L137): Vendor-side logs (voice platform, LLM provider) / The vendor / Per the vendor's terms. VERIFY each one. / Vendor settings, and zero-retention options where offered /
-- [ ] [L147](../docs/safety-and-compliance.md#L147): VERIFY: whether any state requires a **minimum** retention period for any of
-- [ ] [L162](../docs/safety-and-compliance.md#L162): TODO(me): how we grant and review access.
-- [ ] [L207](../docs/safety-and-compliance.md#L207): Does it train on our data? (We need: no) / VERIFY / VERIFY / VERIFY /
-- [ ] [L208](../docs/safety-and-compliance.md#L208): How long does it keep data? / VERIFY / VERIFY / VERIFY /
-- [ ] [L209](../docs/safety-and-compliance.md#L209): Is a data processing agreement (DPA) available? / VERIFY / VERIFY / VERIFY /
-- [ ] [L210](../docs/safety-and-compliance.md#L210): Security certifications (e.g. SOC 2 report) / VERIFY / VERIFY / VERIFY /
-- [ ] [L211](../docs/safety-and-compliance.md#L211): Subprocessors (other companies it passes data to) / VERIFY / VERIFY / VERIFY /
-- [ ] [L212](../docs/safety-and-compliance.md#L212): Data location / VERIFY / VERIFY / VERIFY /
-- [ ] [L213](../docs/safety-and-compliance.md#L213): Spend caps available? / VERIFY / VERIFY / VERIFY /
-- [ ] [L221](../docs/safety-and-compliance.md#L221): someone with safety expertise. TODO(me).
-- [ ] [L230](../docs/safety-and-compliance.md#L230): transcripts could contain more than that. VERIFY: breach-notification duties,
-- [ ] [L232](../docs/safety-and-compliance.md#L232): TODO(me): an incident log location and a notification contact list.
-- [ ] [L238](../docs/safety-and-compliance.md#L238): Cybersecurity Framework (CSF) 2.0 is approximate. VERIFY.
-- [ ] [L246](../docs/safety-and-compliance.md#L246): C-05 / Retention limits and automatic deletion / Storage expiry settings / TODO(me) / Protect /
-- [ ] [L247](../docs/safety-and-compliance.md#L247): C-06 / Per-client separation / One number and config per client, storage partitioning / TODO(me) / Protect /
-- [ ] [L250](../docs/safety-and-compliance.md#L250): C-09 / Three-tool limit enforced in code / Backend code and tests / TODO(me) / Protect /
-- [ ] [L253](../docs/safety-and-compliance.md#L253): C-12 / Monitoring and weekly log review / `docs/monitoring.md` / TODO(me) / Detect /
-- [ ] [L254](../docs/safety-and-compliance.md#L254): C-13 / Voicemail fallback on system failure / Fallback config, failure test scenario / TODO(me) / Recover /
+- [ ] [L87](../docs/safety-and-compliance.md#L87): Email stays a second channel for every client. VERIFY: the registration steps,
+- [ ] [L94](../docs/safety-and-compliance.md#L94): callback is the business's own contact. VERIFY: confirm this is outside our
+- [ ] [L98](../docs/safety-and-compliance.md#L98): consent rules changed in 2024–2025. VERIFY: current status before building
+- [ ] [L122](../docs/safety-and-compliance.md#L122): VERIFY: we're probably not covered by HIPAA (the US health-privacy law for
+- [ ] [L128](../docs/safety-and-compliance.md#L128): TODO(me): decide whether we automatically remove card-like numbers from
+- [ ] [L135](../docs/safety-and-compliance.md#L135): Call summary (message) / Our store, per client / TODO(me) days / Automatic expiry /
+- [ ] [L136](../docs/safety-and-compliance.md#L136): Transcript / Our store, per client / TODO(me) days / Automatic expiry /
+- [ ] [L137](../docs/safety-and-compliance.md#L137): Audio recording (if kept) / Our store, per client / TODO(me) days, or don't keep it / Automatic expiry /
+- [ ] [L138](../docs/safety-and-compliance.md#L138): Vendor-side logs (voice platform, LLM provider) / The vendor / Per the vendor's terms. VERIFY each one. / Vendor settings, and zero-retention options where offered /
+- [ ] [L148](../docs/safety-and-compliance.md#L148): VERIFY: whether any state requires a **minimum** retention period for any of
+- [ ] [L163](../docs/safety-and-compliance.md#L163): TODO(me): how we grant and review access.
+- [ ] [L208](../docs/safety-and-compliance.md#L208): Does it train on our data? (We need: no) / VERIFY / VERIFY / VERIFY /
+- [ ] [L209](../docs/safety-and-compliance.md#L209): How long does it keep data? / VERIFY / VERIFY / VERIFY /
+- [ ] [L210](../docs/safety-and-compliance.md#L210): Is a data processing agreement (DPA) available? / VERIFY / VERIFY / VERIFY /
+- [ ] [L211](../docs/safety-and-compliance.md#L211): Security certifications (e.g. SOC 2 report) / VERIFY / VERIFY / VERIFY /
+- [ ] [L212](../docs/safety-and-compliance.md#L212): Subprocessors (other companies it passes data to) / VERIFY / VERIFY / VERIFY /
+- [ ] [L213](../docs/safety-and-compliance.md#L213): Data location / VERIFY / VERIFY / VERIFY /
+- [ ] [L214](../docs/safety-and-compliance.md#L214): Spend caps available? / VERIFY / VERIFY / VERIFY /
+- [ ] [L222](../docs/safety-and-compliance.md#L222): someone with safety expertise. TODO(me).
+- [ ] [L231](../docs/safety-and-compliance.md#L231): transcripts could contain more than that. VERIFY: breach-notification duties,
+- [ ] [L233](../docs/safety-and-compliance.md#L233): TODO(me): an incident log location and a notification contact list.
+- [ ] [L239](../docs/safety-and-compliance.md#L239): Cybersecurity Framework (CSF) 2.0 is approximate. VERIFY.
+- [ ] [L247](../docs/safety-and-compliance.md#L247): C-05 / Retention limits and automatic deletion / Storage expiry settings / TODO(me) / Protect /
+- [ ] [L248](../docs/safety-and-compliance.md#L248): C-06 / Per-client separation / One number and config per client, storage partitioning / TODO(me) / Protect /
+- [ ] [L251](../docs/safety-and-compliance.md#L251): C-09 / Three-tool limit enforced in code / Backend code and tests / TODO(me) / Protect /
+- [ ] [L254](../docs/safety-and-compliance.md#L254): C-12 / Monitoring and weekly log review / `docs/monitoring.md` / TODO(me) / Detect /
+- [ ] [L255](../docs/safety-and-compliance.md#L255): C-13 / Voicemail fallback on system failure / Fallback config, failure test scenario / TODO(me) / Recover /
 
 ### `prompts/CHANGELOG.md`
 - [ ] [L29](../prompts/CHANGELOG.md#L29): TODO(me): confirm who can approve MAJOR prompt changes.
@@ -301,10 +302,8 @@ These must be resolved before **any real client goes live**. Each is also in the
 ## Phase 9: Architecture, monitoring, roadmap
 
 ### `docs/architecture.md`
-- [ ] [L29](../docs/architecture.md#L29): Voice platform / Answers, streams the caller's speech as text, speaks our replies. It can play the validated greeting itself. / 🔜 Vendor TODO(me) /
 - [ ] [L72](../docs/architecture.md#L72): Logs and metrics / The logging service / TODO(me): a log retention period, with no raw transcripts in logs /
 - [ ] [L80](../docs/architecture.md#L80): > choices are VERIFY: check features, limits, and pricing at the time.
-- [ ] [L100](../docs/architecture.md#L100): **SES / SNS** / Email and SMS to owners. VERIFY: sending business SMS in the US, even to owners who opted in, generally needs a registered sender (10DLC or toll-free ver…
 - [ ] [L116](../docs/architecture.md#L116): TODO(me): decide whether and when to move to self-hosting on AWS. The voice
 
 ### `docs/monitoring.md`
@@ -318,10 +317,19 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L72](../docs/monitoring.md#L72): flagged (spam, wrong number, upset caller), and any issues and fixes. TODO(me):
 
 ### `docs/roadmap.md`
-- [ ] [L14](../docs/roadmap.md#L14): [ ] Set up the notification senders. VERIFY: SMS sender registration requirements.
-- [ ] [L19](../docs/roadmap.md#L19): [ ] Write and review the Spanish fallback line (`languages.other_language_line`). This is still TODO(me) from Phase 3, and needs a fluent reviewer.
-- [ ] [L31](../docs/roadmap.md#L31): [ ] **A2P 10DLC registration** (US carrier registration for business texting): brand and campaign. VERIFY the current process.
-- [ ] [L32](../docs/roadmap.md#L32): [ ] **Consent records** for every contact: proof of opt-in under the TCPA (the US law on automated calls and texts) and state law. VERIFY with an attorney.
+- [ ] [L15](../docs/roadmap.md#L15): [ ] Start A2P 10DLC registration with Twilio now. It takes calendar time. TODO(me)
+- [ ] [L21](../docs/roadmap.md#L21): [ ] Write and review the Spanish fallback line (`languages.other_language_line`). This is still TODO(me) from Phase 3, and needs a fluent reviewer.
+- [ ] [L33](../docs/roadmap.md#L33): [ ] **A2P 10DLC registration** (US carrier registration for business texting): brand and campaign. VERIFY the current process.
+- [ ] [L34](../docs/roadmap.md#L34): [ ] **Consent records** for every contact: proof of opt-in under the TCPA (the US law on automated calls and texts) and state law. VERIFY with an attorney.
+
+## Decisions
+
+### `docs/decisions/0001-twilio-and-a2p-10dlc.md`
+- [ ] [L24](../docs/decisions/0001-twilio-and-a2p-10dlc.md#L24): Vonage is a reasonable second choice. VERIFY: current features and pricing
+- [ ] [L31](../docs/decisions/0001-twilio-and-a2p-10dlc.md#L31): **Start now:** registration review takes calendar time (VERIFY: current
+- [ ] [L41](../docs/decisions/0001-twilio-and-a2p-10dlc.md#L41): message is not success. VERIFY: which delivery-status updates Twilio provides
+- [ ] [L48](../docs/decisions/0001-twilio-and-a2p-10dlc.md#L48): Create the Twilio account under Anthos Intelligence Company, with MFA and a spend limit / Founder / TODO(me) /
+- [ ] [L49](../docs/decisions/0001-twilio-and-a2p-10dlc.md#L49): Register the brand and campaign for A2P 10DLC. Choose the use case closest to operational alerts to a business owner, never marketing. VERIFY: Twilio's current use-case …
 
 ## Final real-data scan
 

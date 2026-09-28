@@ -204,6 +204,12 @@ class ConfigValidatorTests(unittest.TestCase):
     def test_28_rejects_client_id_folder_mismatch(self):
         self.assertRejected(clean_config(), "must match its folder name", folder="some-other-client")
 
+    def test_31_warns_on_sms_only_notifications(self):
+        cfg = clean_config(); cfg["notifications"]["channel"] = "sms"
+        res = validate_config_dict(cfg, folder_name="acme-hvac-test")
+        self.assertTrue(res.ok, res.errors)   # a warning, not a block
+        self.assertTrue(any("'sms' only" in w for w in res.warnings))
+
     # ---------- enforcement points ----------
     def test_29_prompt_builder_refuses_invalid_config(self):
         with tempfile.TemporaryDirectory() as tmp:
