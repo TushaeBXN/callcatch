@@ -363,6 +363,9 @@ def _check_rules(cfg, folder_name, res):
         res.errors.append("notifications.sms_to: needs at least one number for channel " + repr(channel))
     if channel in ("email", "both") and not _get(cfg, "notifications", "email_to"):
         res.errors.append("notifications.email_to: needs at least one address for channel " + repr(channel))
+    if channel == "sms":
+        res.warnings.append("notifications.channel: 'sms' only. Use 'both' so emergency alerts still arrive by email "
+                            "if a text is delayed or filtered (docs/decisions/0001-twilio-and-a2p-10dlc.md)")
     opt = _get(cfg, "notifications", "owner_opt_in") or {}
     if isinstance(opt, dict) and (opt.get("approved_by") is None or opt.get("approved_on") is None):
         res.errors.append("notifications.owner_opt_in: record who opted in to notifications, and when")

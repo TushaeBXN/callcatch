@@ -26,7 +26,7 @@ flowchart LR
 | Stage | What happens | Status |
 |---|---|---|
 | Forwarding | The business line forwards calls to our agent number (`docs/call-flow.md` section 1) | Manual setup per client |
-| Voice platform | Answers, streams the caller's speech as text, speaks our replies. It can play the validated greeting itself. | 🔜 Vendor TODO(me) |
+| Voice platform | Answers, streams the caller's speech as text, speaks our replies. It can play the validated greeting itself. | 🔜 **Twilio** chosen (`docs/decisions/0001-twilio-and-a2p-10dlc.md`) |
 | Voice adapter | Turns platform events into conversation turns. Ends calls after the goodbye, a silence timeout, or the maximum length. | 🔜 |
 | Prompt builder | `backend/prompt_builder.py`: validates the config, and inserts only `model_view()` into the base prompt | ✅ |
 | LLM adapter | `backend/adapters/`: provider-neutral interface, a stub, and an Anthropic adapter | ✅ |
@@ -86,7 +86,7 @@ flowchart LR
     LC --> SM[Secrets Manager]
     LC --> LLM[LLM provider]
     LC --> LS[Lambda: save_message] --> DDB[(DynamoDB<br>TTL = retention)]
-    LC --> LN[Lambda: notify_owner] --> SNS[SNS / SMS] & SES[SES / email]
+    LC --> LN[Lambda: notify_owner] --> TW[Twilio SMS / voice page] & SES[SES / email]
     LN -.failure.-> LR[Retry, then backup, then text, then alert]
     LC --> LB[Lambda: check_or_book_slot] --> CAL[Calendar API]
     LC & LS & LN & LB --> CW[CloudWatch logs, metrics, alarms]
@@ -97,7 +97,7 @@ flowchart LR
 | **API Gateway** | Receives voice-platform webhooks. Signatures are checked before anything else runs. |
 | **Lambda** (one function per job) | The call handler and one function per tool: small, separately permissioned. |
 | **DynamoDB** | Per-client call records, keyed by client, with **TTL** (automatic expiry) set from `data.retention_days` |
-| **SES / SNS** | Email and SMS to owners. VERIFY: sending business SMS in the US, even to owners who opted in, generally needs a registered sender (10DLC or toll-free verification). Check before launch. |
+| **SES / Twilio** | Email via SES. SMS and voice pages via Twilio (decision 0001), with A2P 10DLC registration treated as required. |
 | **Secrets Manager** | API keys and real client contacts. Never in code or environment files. |
 | **CloudWatch** | Logs, metrics, and the alarms in `docs/monitoring.md` |
 | **AWS Budgets** | Spend alarms on top of the vendor spend caps |
