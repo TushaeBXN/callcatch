@@ -590,4 +590,4 @@ scenarios:
 
   # NOTE: The full "AI is down -> recorded message + voicemail" fallback happens
   # in the voice platform, not the model. It can't be tested here. It needs a
-  # manual test on the staging number. TODO(me): add that to docs/onboarding.md.
+  # manual test on the staging number: see docs/onboarding.md step 7.3.
