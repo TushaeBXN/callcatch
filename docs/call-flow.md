@@ -218,8 +218,8 @@ never down.
 |---|---|---|
 | Water leak or burst pipe | "Is the water near any outlets, electrical panels, or appliances?" | **Tier 1** (water near electrics) |
 | Sewage backing up into the home | none | Stays Tier 2 |
-| No heat or no cooling (any weather) | "Is anyone elderly, a baby, or unwell in the home?" and "Is anyone feeling sick right now?" | Someone vulnerable at home: Tier 2, flagged **vulnerable occupant**. Anyone feeling sick now: **Tier 1** ("call 911"). |
-| Roof leak | "Is water coming inside right now?" | Tier 2. If it's also near electrics: **Tier 1**. |
+| No heat or no cooling (any weather) | **Always both, in this order:** "Is anyone elderly, a baby, or unwell in the home?" then "Is anyone feeling sick right now?" | Someone vulnerable at home: Tier 2, flagged **vulnerable occupant**. Anyone feeling sick now: **Tier 1** ("call 911"). |
+| Roof leak | "Is water coming inside right now?" and then "Is the water near any outlets, electrical panels, or appliances?" | Water inside: Tier 2. Near electrics, or unclear: **Tier 1**. |
 | Garage door stuck open, or a car trapped inside | "Are you able to lock up the house without it?" | If not, it stays Tier 2 and is flagged **home not secure** |
 | Vehicle broken down | "Are you somewhere safe, off the road?" | If not: **Tier 1** ("If you're in danger, call 911 now.") |
 
@@ -305,7 +305,7 @@ TODO(me): Record the fallback voicemail greeting for each client.
 |---|---|
 | **Caller who won't stop talking** | Politely steps in: "Got it, that helps. Just so I get this to the team, what's the best number to reach you?" It summarizes their story briefly and doesn't cut them off rudely. |
 | **Angry caller** | Stays calm and doesn't argue or make promises: "I'm sorry you're dealing with this. I'll make sure the team gets your message." Flags the call as "upset caller" in the summary. |
-| **Silent caller** | "Hello, are you there?" twice, about 5 seconds apart. Then: "I can't hear you. If you need help, please call back. If this is an emergency, hang up and call 911." Then it ends the call and logs it. |
+| **Silent caller** | "Hello, are you there?" twice, about 5 seconds apart. Then: "I can't hear you. If you need help, please call back. If this is an emergency, hang up and call 911." Then it stops talking, and the phone system ends the call after a short silence timeout. The call is logged. |
 | **Lots of background noise** | Asks the caller to repeat, and reads back the key details (number and address) carefully. Notes "poor audio" in the summary so the owner double-checks. |
 | **Spam or sales call** | Stays brief and polite: "I'll pass your message to the team." Labels the call **Likely spam/sales** and sends no urgent alert. TODO(me): should these go in a daily digest instead of individual texts? |
 | **Wrong number** | "This is the after-hours line for Acme HVAC. Were you trying to reach us?" If not, it ends politely. Logged, and no owner alert. |

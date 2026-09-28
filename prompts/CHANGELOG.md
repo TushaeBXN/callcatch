@@ -42,6 +42,25 @@ When in doubt, bump the higher one.
 
 ---
 
+## [0.1.1] — 2026-09-28 — Review fixes before Phase 3 approval
+- What changed:
+  - Roof leak: always ask the electrical-proximity question. Yes or unclear is Tier 1.
+  - No heat or cooling: always ask both vulnerability questions, in a fixed order.
+  - Greeting: the config greeting must include the AI disclosure and a recording
+    notice that matches storage. The voice platform may play it. The backend or CI
+    must reject configs without it.
+  - Call ending: the platform ends calls (after the goodbye, a silence timeout, or
+    the maximum length). No end-call tool, so there are still exactly three tools.
+  - Untrusted input: command-like caller text is recorded as quoted speech.
+  - Health details: not asked for. Only an urgency flag is recorded, never
+    conditions or medications.
+  - Human notes: notify_owner succeeds only on confirmed delivery, and summary
+    fields are untrusted text.
+- Why: founder review of 0.1.0.
+- Tier 1 lines: unchanged, and still identical to docs/call-flow.md.
+- Scenarios reviewed: not yet (Phase 4).
+- Approved by: founder (pending commit).
+
 ## [0.1.0] — 2026-09-28 — Initial draft
 - What changed: first version of the base prompt, built from `docs/call-flow.md` as approved in Phase 2.
 - Why: project start.

@@ -10,7 +10,7 @@
 - **Operator:** Anthos Intelligence Company
 - **Service:** CallCatch, an inbound after-hours AI receptionist
 - **Document owner:** TODO(me)
-- **Last reviewed:** 2026-09-28 (draft). Attorney review: TODO(me)
+- **Last reviewed:** 2026-09-28 (draft, rev. 2). Attorney review: TODO(me)
 
 ---
 
@@ -101,8 +101,24 @@ name, service address, urgency, and best callback time. We also collect caller
 ID when the carrier provides it.
 
 - The assistant never asks for payment details, account numbers, passwords,
-  dates of birth, ID numbers, or health details. If a caller volunteers them, the
-  assistant doesn't repeat them and tells the caller they aren't needed.
+  dates of birth, or ID numbers. If a caller volunteers them, the assistant
+  doesn't repeat them and tells the caller they aren't needed.
+- **Incidental health information:**
+  - **Not prompted for.** The assistant never asks about medical conditions,
+    diagnoses, or medications. The only exception is two yes/no safety questions
+    used to decide urgency: "Is anyone elderly, a baby, or unwell in the home?"
+    and "Is anyone feeling sick right now?"
+  - **Minimized.** If a caller volunteers health details ("someone here has a heart
+    condition"), the summary records only the urgency-relevant flag, such as
+    "vulnerable occupant" or "someone feeling sick". It never records the
+    condition, diagnosis, or medication.
+  - **Covered by retention limits.** Transcripts and audio may still contain what
+    the caller said. They follow the same retention and deletion rules in
+    section 6, with no longer periods and no exceptions.
+  - VERIFY: we're probably not covered by HIPAA (the US health-privacy law for
+    healthcare providers, insurers, and their contractors), but some state
+    privacy laws treat health data as sensitive. An attorney should confirm what
+    applies.
 - Text-message summaries are kept short on purpose. Fuller details stay in email
   and in the access-controlled log.
 - TODO(me): decide whether we automatically remove card-like numbers from
@@ -119,6 +135,10 @@ ID when the carrier provides it.
 | Owner notifications | The owner's phone and inbox | Out of our control | Explained to the owner at onboarding |
 
 - If a client's agreement sets a shorter period, the shorter period wins.
+- Transcripts and audio can contain incidental sensitive details a caller
+  volunteered, such as health information or card numbers. These follow the same
+  retention limits as the rest of the transcript, with no exceptions (see
+  section 5).
 - At offboarding: export (if the agreement requires it), then delete. See
   `docs/offboarding.md` (Phase 6).
 - VERIFY: whether any state requires a **minimum** retention period for any of
@@ -162,7 +182,7 @@ ID when the carrier provides it.
 | Tool | Hard limit enforced in code |
 |---|---|
 | `save_message` | Writes only to the current client's store. It can't read, list, or delete. |
-| `notify_owner` | **Has no "send to" field.** It sends only to the numbers and emails in the client config, and is rate-limited per call. |
+| `notify_owner` | **Has no "send to" field.** It sends only to the numbers and emails in the client config, and is rate-limited per call. All summary fields are treated as untrusted caller text: length-capped, links disabled, labeled as the caller's words. Reports success only on confirmed delivery. |
 | `check_or_book_slot` | Only reaches the current client's calendar. It can check and create, but not delete or edit other bookings. Disabled unless the config turns it on. |
 
 - The model has no internet access, no code execution, no payments, and no call
