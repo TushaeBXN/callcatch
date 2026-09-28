@@ -34,5 +34,5 @@ repos:
         name: Prompt and call-flow safety wording match
         entry: python3 tests/check_prompt_sync.py
         language: system
-        files: ^(prompts/base_system_prompt\.md|docs/call-flow\.md)$
+        files: ^(prompts/base_system_prompt\.md|docs/call-flow\.md|tests/check_prompt_sync\.py)$
         pass_filenames: false
