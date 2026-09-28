@@ -14,6 +14,7 @@ Read docs/unit-economics.md for what each output means, and why the
 """
 
 import argparse
+import json
 import sys
 from dataclasses import dataclass, fields
 
@@ -180,9 +181,16 @@ def main(argv=None):
     for f in fields(Inputs):
         parser.add_argument("--" + f.name.replace("_", "-"), type=float, default=f.default, dest=f.name,
                             help=f"(default {f.default:g})")
-    args = parser.parse_args(argv)
+    parser.add_argument("--json", action="store_true", help="Print inputs and outputs as JSON (used by build_unit_economics_doc.py)")
+    args = vars(parser.parse_args(argv))
+    as_json = args.pop("json")
     try:
-        print(report(Inputs(**vars(args))))
+        inputs = Inputs(**args)
+        if as_json:
+            print(json.dumps({"inputs": inputs.__dict__, "outputs": calculate(inputs),
+                              "weeks_per_month": WEEKS_PER_MONTH}, default=str))
+        else:
+            print(report(inputs))
     except InputError as e:
         sys.exit(str(e))
 

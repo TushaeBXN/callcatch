@@ -48,3 +48,12 @@ repos:
         language: system
         files: ^(clients/[^/]+/config\.yaml|backend/config_schema\.py|tests/validate_config\.py)$
         pass_filenames: false
+
+      # Fails if docs/unit-economics.md no longer matches the calculator's real output.
+      # Standard library only.
+      - id: unit-economics-doc
+        name: Unit-economics doc matches calculator output
+        entry: python3 docs/build_unit_economics_doc.py --check
+        language: system
+        files: ^docs/(unit_economics\.py|unit-economics\.md|build_unit_economics_doc\.py|templates/unit-economics\.md\.tmpl)$
+        pass_filenames: false

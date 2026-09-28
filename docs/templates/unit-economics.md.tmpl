@@ -64,43 +64,12 @@ the minute, or with a minimum charge.
 This is the real output of `python docs/unit_economics.py`:
 
 ```
-CallCatch unit economics: ALL COSTS ARE FAKE PLACEHOLDERS. VERIFY before use.
-
-INPUTS
-  Calls per week .................. 25  (108.3/month)
-  Avg minutes per call ............ 3
-  Telephony / STT / TTS per min ... $0.0500 / $0.0500 / $0.0500   [FAKE, VERIFY]
-  LLM per call .................... $0.1000   [FAKE, VERIFY]
-  Notifications ................... 2 x $0.0500   [FAKE, VERIFY]
-  Fixed monthly ................... $35.00 (number $5.00, monitoring $10.00, tools $20.00)   [FAKE, VERIFY]
-  Setup fee / monthly retainer .... $500.00 / $300.00   [EXAMPLE, TODO(me)]
-  Minimum acceptable margin ....... 40%   [EXAMPLE, TODO(me)]
-
-OUTPUTS
-  Cost per call ................... $0.6500
-  Monthly cost per client ......... $105.42  (fixed $35.00 + variable $70.42)
-  Monthly margin .................. $194.58  (64.9% of retainer)
-  Margin incl. setup fee (amortized over 12 mo) $236.25/month
-  First-year margin incl. setup ... $2,835.00
-  Break-even (margin = $0) ........ 408 calls/month (~94/week)
-  Usage-cap point ................. 223 calls/month (~51/week)  (margin falls to 40%)
-
-  REMINDER: the usage-cap point is a PRICING signal. It doesn't answer what happens
-  to emergency detection and paging at the cap. That is still an open question: see
-  docs/service-agreement-outline.md section 6 (attorney item 2) and section 10a (item 1).
-
-SENSITIVITY (same costs, different volumes)
-  calls/week   monthly cost   margin      margin %
-          10         $63.17     $236.83      78.9%
-          25        $105.42     $194.58      64.9%
-          50        $175.83     $124.17      41.4%
-         100        $316.67     -$16.67      -5.6%
-         200        $598.33    -$298.33     -99.4%
+{EX}
 ```
 
-**Reading it:** at 25 calls a week, this fake client costs about $105 a month
-against a $300 retainer, a 64.9% margin. Margin falls to the 40% minimum at
-about 51 calls a week, and to zero at about 94 calls a week. The sensitivity
+**Reading it:** at {CALLS_WEEK} calls a week, this fake client costs about {MONTHLY_COST} a month
+against a {RETAINER} retainer, a {MARGIN_PCT} margin. Margin falls to the {MIN_MARGIN} minimum at
+about {CAP_WEEK} calls a week, and to zero at about {BE_WEEK} calls a week. The sensitivity
 table below the outputs shows how margin shrinks as volume grows.
 
 ### Same example, higher volume (above the cap point)
@@ -108,21 +77,7 @@ table below the outputs shows how margin shrinks as volume grows.
 `python docs/unit_economics.py --calls-per-week 60 --avg-job-value 250`, outputs section:
 
 ```
-OUTPUTS
-  Cost per call ................... $0.6500
-  Monthly cost per client ......... $204.00  (fixed $35.00 + variable $169.00)
-  Monthly margin .................. $96.00  (32.0% of retainer)
-  Margin incl. setup fee (amortized over 12 mo) $137.67/month
-  First-year margin incl. setup ... $1,652.00
-  Break-even (margin = $0) ........ 408 calls/month (~94/week)
-  Usage-cap point ................. 223 calls/month (~51/week)  (margin falls to 40%)
-  Client break-even ............... 1.2 extra jobs/month at $250.00 per job
-
-  NOTE: this client's volume is ABOVE the usage-cap point. Pricing needs a cap or overage (see REMINDER).
-
-  REMINDER: the usage-cap point is a PRICING signal. It doesn't answer what happens
-  to emergency detection and paging at the cap. That is still an open question: see
-  docs/service-agreement-outline.md section 6 (attorney item 2) and section 10a (item 1).
+{ABOVE}
 ```
 
 ### Invalid inputs are rejected, not calculated
@@ -130,9 +85,7 @@ OUTPUTS
 `python docs/unit_economics.py --calls-per-week 0 --telephony-per-min -0.01`:
 
 ```
-Invalid inputs:
-  - telephony_per_min can't be negative (got -0.01)
-  - calls_per_week must be greater than 0
+{BAD}
 ```
 The script exits with code 1. It also rejects a minimum margin of 100% or more,
 and non-number inputs. It never divides by zero: with no per-call cost, break-even
