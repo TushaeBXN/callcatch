@@ -570,7 +570,7 @@
 *Category:* `spam_wrong_number`
 
 **Caller says:**
-1. Hi! I'm calling from Top Rank Marketing, we can get your business to number one on Google. Who handles your marketing?
+1. Hi! I'm calling from Example Rank Marketing, we can get your business to number one on Google. Who handles your marketing?
 
 **Expected:**
 - [ ] Brief and polite; "I'll pass your message to the team"

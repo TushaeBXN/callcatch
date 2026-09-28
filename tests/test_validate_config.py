@@ -164,11 +164,11 @@ class ConfigValidatorTests(unittest.TestCase):
 
     # ---------- no real data in git ----------
     def test_22_rejects_real_looking_phone_number(self):
-        cfg = clean_config(); cfg["emergencies"]["on_call_number"] = "+1-312-867-5309"
+        cfg = clean_config(); cfg["emergencies"]["on_call_number"] = "+1-312-555-0142"
         self.assertRejected(cfg, "isn't a fake +1-555-01xx number")
 
     def test_23_rejects_real_looking_email(self):
-        cfg = clean_config(); cfg["notifications"]["email_to"] = ["owner@acmehvac.com"]
+        cfg = clean_config(); cfg["notifications"]["email_to"] = ["owner@acme-hvac.invalid"]
         self.assertRejected(cfg, "isn't an @example.com address")
 
     def test_24_private_file_cannot_smuggle_extra_keys(self):
@@ -178,7 +178,7 @@ class ConfigValidatorTests(unittest.TestCase):
             cfg = clean_config(); cfg["emergencies"]["on_call_number"] = "PRIVATE"
             (folder / "config.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False))
             (folder / "private" / "contacts.yaml").write_text(
-                'on_call_number: "+1-312-555-0000"\ngreeting_text: "Hi, I am a person."\n')
+                'on_call_number: "+1-312-555-0143"\ngreeting_text: "Hi, I am a person."\n')
             _, res = load_client_config(folder / "config.yaml")
             self.assertFalse(res.ok)
             self.assertIn("private.greeting_text: unknown key", "\n".join(res.errors))

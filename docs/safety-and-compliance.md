@@ -82,6 +82,9 @@ automated calls and texts to consumers. VERIFY all points with an attorney.
 - **Owner notifications** (texts or emails to the business owner about their own
   calls) go to a business contact who asked for them. We record the owner's
   written opt-in during onboarding. VERIFY whether any consent formalities apply.
+  VERIFY: sending business SMS in the US, even to owners who opted in, generally
+  requires a registered sender (10DLC or toll-free verification) with the
+  messaging provider. Confirm before the first pilot.
 - **We do NOT send automated texts or calls to callers in version 1.** No
   "thanks for calling" texts, no reminders. A confirmation text to a consumer is
   outbound automated contact, and it can bring in TCPA consent rules and US

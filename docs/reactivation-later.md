@@ -16,4 +16,4 @@ Before any work starts, it will need:
 - **Opt-out handling.** Honor STOP / "don't contact me" immediately and
   permanently, across every channel.
 
-See `docs/roadmap.md` (to be written) and `docs/safety-and-compliance.md` (Phase 3).
+See `docs/roadmap.md` (section 4) and `docs/safety-and-compliance.md` (section 4).

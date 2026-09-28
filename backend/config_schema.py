@@ -268,7 +268,7 @@ def _check(value, spec, path, res):
                               f"clients/<name>/private/contacts.yaml, with PRIVATE written here.")
     elif kind == "real_phone":
         if not isinstance(value, str) or not REAL_PHONE.match(value):
-            res.errors.append(f"{where}: must be a US number like +1-312-555-1234")
+            res.errors.append(f"{where}: must be a US number like +1-312-555-0142")
     elif kind == "real_email":
         if not isinstance(value, str) or not REAL_EMAIL.match(value):
             res.errors.append(f"{where}: must be an email address")

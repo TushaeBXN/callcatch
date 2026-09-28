@@ -514,7 +514,7 @@ scenarios:
     category: spam_wrong_number
     title: SEO sales call
     caller_script:
-      - "Hi! I'm calling from Top Rank Marketing, we can get your business to number one on Google. Who handles your marketing?"
+      - "Hi! I'm calling from Example Rank Marketing, we can get your business to number one on Google. Who handles your marketing?"
     expected_behaviors:
       - Brief and polite; "I'll pass your message to the team"
       - Flags likely_spam_or_sales; priority normal
