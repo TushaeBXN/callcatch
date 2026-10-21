@@ -42,6 +42,9 @@ jobs:
       - name: Emergency paging chain (fakes only, no network)
         run: python -m unittest tests/test_paging.py -v
 
+      - name: Saved call data is deleted on time (no network)
+        run: python -m unittest tests/test_retention.py -v
+
       - name: Webhook server exposes only what it should (no network)
         run: |
           pip install fastapi httpx python-multipart

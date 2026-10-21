@@ -23,7 +23,7 @@ from backend import paging
 
 log = logging.getLogger("callcatch.tools")
 
-_DATA_ROOT = Path(os.environ.get("CALLCATCH_DATA_DIR", Path.home() / ".callcatch" / "calls"))
+_DATA_ROOT = Path(os.environ.get("CALLCATCH_DATA_DIR", Path.home() / ".callcatch" / "calls")).expanduser()
 
 
 def _call_dir(client_id: str, call_sid: str) -> Path:

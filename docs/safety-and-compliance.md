@@ -139,6 +139,13 @@ ID when the carrier provides it.
 | Owner notifications | The owner's phone and inbox | Out of our control | Explained to the owner at onboarding |
 
 - If a client's agreement sets a shorter period, the shorter period wins.
+- **How automatic expiry works today:** `backend/retention.py` runs when the
+  server starts and then hourly. It deletes each call's saved data (summary and
+  page log) once the call's newest file is older than that client's
+  `data.retention_days`. If a client's config is missing or invalid, it uses
+  `MAX_RETENTION_DAYS`, so data is never deleted early and never kept past the
+  maximum. Run `python -m backend.retention --dry-run` to see what it would delete.
+  This covers only our own store. Vendor-side logs (row above) need each vendor's settings.
 - Transcripts and audio can contain incidental sensitive details a caller
   volunteered, such as health information or card numbers. These follow the same
   retention limits as the rest of the transcript, with no exceptions (see

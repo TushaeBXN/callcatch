@@ -64,7 +64,7 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L17](../.env.example#L17): TODO(me): Set the model name. You chose a fast, low-cost tier, since voice needs quick replies.
 - [ ] [L19](../.env.example#L19): VERIFY: check docs.anthropic.com for current model names and prices. They change.
 - [ ] [L48](../.env.example#L48): TODO(me): retry count and spacing are still open in docs/call-flow.md.
-- [ ] [L63](../.env.example#L63): TODO(me): Also set a monthly spend limit in each vendor's own console.
+- [ ] [L75](../.env.example#L75): TODO(me): Also set a monthly spend limit in each vendor's own console.
 
 ### `.github/pull_request_template.md`
 - [ ] [L17](../.github/pull_request_template.md#L17): [ ] **New TODO(me) / VERIFY items** are added to `docs/open-items.md`.
@@ -156,24 +156,24 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L136](../docs/safety-and-compliance.md#L136): Transcript / Our store, per client / TODO(me) days / Automatic expiry /
 - [ ] [L137](../docs/safety-and-compliance.md#L137): Audio recording (if kept) / Our store, per client / TODO(me) days, or don't keep it / Automatic expiry /
 - [ ] [L138](../docs/safety-and-compliance.md#L138): Vendor-side logs (voice platform, LLM provider) / The vendor / Per the vendor's terms. VERIFY each one. / Vendor settings, and zero-retention options where offered /
-- [ ] [L148](../docs/safety-and-compliance.md#L148): VERIFY: whether any state requires a **minimum** retention period for any of
-- [ ] [L163](../docs/safety-and-compliance.md#L163): TODO(me): how we grant and review access.
-- [ ] [L208](../docs/safety-and-compliance.md#L208): Does it train on our data? (We need: no) / VERIFY / VERIFY / VERIFY /
-- [ ] [L209](../docs/safety-and-compliance.md#L209): How long does it keep data? / VERIFY / VERIFY / VERIFY /
-- [ ] [L210](../docs/safety-and-compliance.md#L210): Is a data processing agreement (DPA) available? / VERIFY / VERIFY / VERIFY /
-- [ ] [L211](../docs/safety-and-compliance.md#L211): Security certifications (e.g. SOC 2 report) / VERIFY / VERIFY / VERIFY /
-- [ ] [L212](../docs/safety-and-compliance.md#L212): Subprocessors (other companies it passes data to) / VERIFY / VERIFY / VERIFY /
-- [ ] [L213](../docs/safety-and-compliance.md#L213): Data location / VERIFY / VERIFY / VERIFY /
-- [ ] [L214](../docs/safety-and-compliance.md#L214): Spend caps available? / VERIFY / VERIFY / VERIFY /
-- [ ] [L222](../docs/safety-and-compliance.md#L222): someone with safety expertise. TODO(me).
-- [ ] [L231](../docs/safety-and-compliance.md#L231): transcripts could contain more than that. VERIFY: breach-notification duties,
-- [ ] [L233](../docs/safety-and-compliance.md#L233): TODO(me): an incident log location and a notification contact list.
-- [ ] [L239](../docs/safety-and-compliance.md#L239): Cybersecurity Framework (CSF) 2.0 is approximate. VERIFY.
-- [ ] [L247](../docs/safety-and-compliance.md#L247): C-05 / Retention limits and automatic deletion / Storage expiry settings / TODO(me) / Protect /
-- [ ] [L248](../docs/safety-and-compliance.md#L248): C-06 / Per-client separation / One number and config per client, storage partitioning / TODO(me) / Protect /
-- [ ] [L251](../docs/safety-and-compliance.md#L251): C-09 / Three-tool limit enforced in code / Backend code and tests / TODO(me) / Protect /
-- [ ] [L254](../docs/safety-and-compliance.md#L254): C-12 / Monitoring and weekly log review / `docs/monitoring.md` / TODO(me) / Detect /
-- [ ] [L255](../docs/safety-and-compliance.md#L255): C-13 / Voicemail fallback on system failure / Fallback config, failure test scenario / TODO(me) / Recover /
+- [ ] [L155](../docs/safety-and-compliance.md#L155): VERIFY: whether any state requires a **minimum** retention period for any of
+- [ ] [L170](../docs/safety-and-compliance.md#L170): TODO(me): how we grant and review access.
+- [ ] [L215](../docs/safety-and-compliance.md#L215): Does it train on our data? (We need: no) / VERIFY / VERIFY / VERIFY /
+- [ ] [L216](../docs/safety-and-compliance.md#L216): How long does it keep data? / VERIFY / VERIFY / VERIFY /
+- [ ] [L217](../docs/safety-and-compliance.md#L217): Is a data processing agreement (DPA) available? / VERIFY / VERIFY / VERIFY /
+- [ ] [L218](../docs/safety-and-compliance.md#L218): Security certifications (e.g. SOC 2 report) / VERIFY / VERIFY / VERIFY /
+- [ ] [L219](../docs/safety-and-compliance.md#L219): Subprocessors (other companies it passes data to) / VERIFY / VERIFY / VERIFY /
+- [ ] [L220](../docs/safety-and-compliance.md#L220): Data location / VERIFY / VERIFY / VERIFY /
+- [ ] [L221](../docs/safety-and-compliance.md#L221): Spend caps available? / VERIFY / VERIFY / VERIFY /
+- [ ] [L229](../docs/safety-and-compliance.md#L229): someone with safety expertise. TODO(me).
+- [ ] [L238](../docs/safety-and-compliance.md#L238): transcripts could contain more than that. VERIFY: breach-notification duties,
+- [ ] [L240](../docs/safety-and-compliance.md#L240): TODO(me): an incident log location and a notification contact list.
+- [ ] [L246](../docs/safety-and-compliance.md#L246): Cybersecurity Framework (CSF) 2.0 is approximate. VERIFY.
+- [ ] [L254](../docs/safety-and-compliance.md#L254): C-05 / Retention limits and automatic deletion / Storage expiry settings / TODO(me) / Protect /
+- [ ] [L255](../docs/safety-and-compliance.md#L255): C-06 / Per-client separation / One number and config per client, storage partitioning / TODO(me) / Protect /
+- [ ] [L258](../docs/safety-and-compliance.md#L258): C-09 / Three-tool limit enforced in code / Backend code and tests / TODO(me) / Protect /
+- [ ] [L261](../docs/safety-and-compliance.md#L261): C-12 / Monitoring and weekly log review / `docs/monitoring.md` / TODO(me) / Detect /
+- [ ] [L262](../docs/safety-and-compliance.md#L262): C-13 / Voicemail fallback on system failure / Fallback config, failure test scenario / TODO(me) / Recover /
 
 ### `prompts/CHANGELOG.md`
 - [ ] [L29](../prompts/CHANGELOG.md#L29): TODO(me): confirm who can approve MAJOR prompt changes.

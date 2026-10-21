@@ -32,7 +32,7 @@ flowchart LR
 | LLM adapter | `backend/adapters/`: provider-neutral interface, a stub, and an Anthropic adapter | ✅ |
 | Tools | `backend/tools.py`: exactly three definitions | ✅ definitions; 🔜 real implementations |
 | Notifications | SMS and email to the config's numbers only. "Success" means delivery confirmed. | 🔜 |
-| Store and logs | Per-client, expiring per `data.retention_days` | 🔜 |
+| Store and logs | Per-client, expiring per `data.retention_days` | ✅ local files, deleted hourly by `backend/retention.py`; 🔜 a database |
 
 ## Adapters: why the design is vendor-neutral
 

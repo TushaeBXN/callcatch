@@ -17,13 +17,15 @@ from __future__ import annotations
 
 import asyncio
 import hmac
+import logging
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI, Form, Request, Response
 from fastapi.responses import PlainTextResponse
 
-from backend import paging
+from backend import paging, retention
 from backend.adapters.twilio_voice_adapter import (
     error_twiml,
     greeting_twiml,
@@ -38,7 +40,27 @@ from backend.session import CallSession
 
 load_dotenv()
 
-app = FastAPI(title="CallCatch", docs_url=None, redoc_url=None)
+_RETENTION_SWEEP_MINUTES = float(os.environ.get("RETENTION_SWEEP_MINUTES", "60"))
+
+
+async def _retention_loop():
+    """Delete expired call data on startup, then every RETENTION_SWEEP_MINUTES."""
+    while True:
+        try:
+            await asyncio.to_thread(retention.sweep)
+        except Exception:
+            logging.getLogger("callcatch.retention").exception("retention sweep failed")
+        await asyncio.sleep(_RETENTION_SWEEP_MINUTES * 60)
+
+
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    task = asyncio.create_task(_retention_loop())
+    yield
+    task.cancel()
+
+
+app = FastAPI(title="CallCatch", docs_url=None, redoc_url=None, lifespan=_lifespan)
 
 _REPO_ROOT = Path(__file__).resolve().parent
 _CLIENTS_DIR = _REPO_ROOT / "clients"
