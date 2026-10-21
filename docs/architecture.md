@@ -1,6 +1,7 @@
 # Architecture
 
 A short overview for contributors. What exists **today** is marked ✅. What's
+**built but not yet tested on a real phone call** is marked 🧪. What's
 **planned** is marked 🔜. The AWS deployment at the end is **optional and later**,
 not part of the current design.
 
@@ -26,12 +27,12 @@ flowchart LR
 | Stage | What happens | Status |
 |---|---|---|
 | Forwarding | The business line forwards calls to our agent number (`docs/call-flow.md` section 1) | Manual setup per client |
-| Voice platform | Answers, streams the caller's speech as text, speaks our replies. It can play the validated greeting itself. | 🔜 **Twilio** chosen (`docs/decisions/0001-twilio-and-a2p-10dlc.md`) |
-| Voice adapter | Turns platform events into conversation turns. Ends calls after the goodbye, a silence timeout, or the maximum length. | 🔜 |
+| Voice platform | Answers, streams the caller's speech as text, speaks our replies. It can play the validated greeting itself. | 🧪 **Twilio** (`docs/decisions/0001-twilio-and-a2p-10dlc.md`); no account or number yet |
+| Voice adapter | Turns platform events into conversation turns. Ends calls after the goodbye, a silence timeout, or the maximum length. | 🧪 `app.py`, `backend/adapters/twilio_voice_adapter.py` |
 | Prompt builder | `backend/prompt_builder.py`: validates the config, and inserts only `model_view()` into the base prompt | ✅ |
 | LLM adapter | `backend/adapters/`: provider-neutral interface, a stub, and an Anthropic adapter | ✅ |
-| Tools | `backend/tools.py`: exactly three definitions | ✅ definitions; 🔜 real implementations |
-| Notifications | SMS and email to the config's numbers only. "Success" means delivery confirmed. | 🔜 |
+| Tools | `backend/tools.py`: exactly three definitions | ✅ definitions; 🧪 implementations in `backend/tool_executors.py` |
+| Notifications | SMS and email to the config's numbers only. "Success" means delivery confirmed. | 🧪 `backend/paging.py`: background escalation chain, delivered-only success |
 | Store and logs | Per-client, expiring per `data.retention_days` | ✅ local files, deleted hourly by `backend/retention.py`; 🔜 a database |
 
 ## Adapters: why the design is vendor-neutral

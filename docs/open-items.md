@@ -9,7 +9,7 @@ python docs/build_open_items.py
 ```
 
 Generated copies (`tests/scenarios.md`, `docs/unit-economics.md`) are skipped. Their sources are listed instead.
-In Python files, only comments and docstrings count. **Totals: 122 `TODO(me)`, 112 `VERIFY`.**
+In Python files, only comments and docstrings count. **Totals: 123 `TODO(me)`, 112 `VERIFY`.**
 
 ## Blockers before any real client
 
@@ -23,7 +23,7 @@ These must be resolved before **any real client goes live**. Each is also in the
 4. **Retention periods** (`data.retention_days` default, `MAX_RETENTION_DAYS`, log retention).
 5. **Security contact:** replace `[EMAIL]` in `SECURITY.md`.
 6. **A2P 10DLC registration with Twilio**: decided (treat as required), **not yet started**. Start now, since review takes calendar time (`docs/decisions/0001-twilio-and-a2p-10dlc.md`).
-7. **Twilio chosen as voice and SMS platform.** Still to build: the voice adapter, plus real tool implementations with confirmed-delivery paging, retry, and backup (`docs/roadmap.md` section 1).
+7. **First live test call.** The voice adapter, the tools, and confirmed-delivery paging with retry and backup are built but have only run against fakes. Test them on a staging Twilio number, including every emergency path, before any client (`docs/roadmap.md` section 1).
 8. **Branch protection and the required CI check** on GitHub (manual, see the Phase 1 notes).
 
 ## Resolved or partly resolved during review
@@ -54,7 +54,7 @@ These must be resolved before **any real client goes live**. Each is also in the
 | Phase 6: Onboarding and offboarding | 2 | 8 |
 | Phase 7: Service agreement | 1 | 33 |
 | Phase 8: Unit economics | 2 | 29 |
-| Phase 9: Architecture, monitoring, roadmap | 3 | 15 |
+| Phase 9: Architecture, monitoring, roadmap | 3 | 16 |
 | Decisions | 1 | 5 |
 | Other | 1 | 2 |
 
@@ -79,10 +79,10 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L72](../CONTRIBUTING.md#L72): the same time. TODO(me): decide how ownership is recorded and handed over.
 
 ### `README.md`
-- [ ] [L99](../README.md#L99): `TODO(me):` — a decision or fill-in the founder must make.
-- [ ] [L100](../README.md#L100): `VERIFY:` — a fact that may be out of date (pricing, laws, carrier codes).
-- [ ] [L108](../README.md#L108): VERIFY: check the current stable version at python.org.
-- [ ] [L110](../README.md#L110): > **macOS + python.org Python:** if you see `CERTIFICATE_VERIFY_FAILED`, run the
+- [ ] [L121](../README.md#L121): `TODO(me):` — a decision or fill-in the founder must make.
+- [ ] [L122](../README.md#L122): `VERIFY:` — a fact that may be out of date (pricing, laws, carrier codes).
+- [ ] [L130](../README.md#L130): VERIFY: check the current stable version at python.org.
+- [ ] [L132](../README.md#L132): > **macOS + python.org Python:** if you see `CERTIFICATE_VERIFY_FAILED`, run the
 
 ### `SECURITY.md`
 - [ ] [L10](../SECURITY.md#L10): make the assistant misbehave), email **[EMAIL]** <!-- TODO(me): set a monitored security address, e.g. security@yourdomain -->.
@@ -303,9 +303,9 @@ These must be resolved before **any real client goes live**. Each is also in the
 ## Phase 9: Architecture, monitoring, roadmap
 
 ### `docs/architecture.md`
-- [ ] [L72](../docs/architecture.md#L72): Logs and metrics / The logging service / TODO(me): a log retention period, with no raw transcripts in logs /
-- [ ] [L80](../docs/architecture.md#L80): > choices are VERIFY: check features, limits, and pricing at the time.
-- [ ] [L116](../docs/architecture.md#L116): TODO(me): decide whether and when to move to self-hosting on AWS. The voice
+- [ ] [L73](../docs/architecture.md#L73): Logs and metrics / The logging service / TODO(me): a log retention period, with no raw transcripts in logs /
+- [ ] [L81](../docs/architecture.md#L81): > choices are VERIFY: check features, limits, and pricing at the time.
+- [ ] [L117](../docs/architecture.md#L117): TODO(me): decide whether and when to move to self-hosting on AWS. The voice
 
 ### `docs/monitoring.md`
 - [ ] [L4](../docs/monitoring.md#L4): failure into a test. Thresholds are TODO(me) until real traffic gives us a
@@ -318,10 +318,11 @@ These must be resolved before **any real client goes live**. Each is also in the
 - [ ] [L72](../docs/monitoring.md#L72): flagged (spam, wrong number, upset caller), and any issues and fixes. TODO(me):
 
 ### `docs/roadmap.md`
-- [ ] [L15](../docs/roadmap.md#L15): [ ] Start A2P 10DLC registration with Twilio now. It takes calendar time. TODO(me)
-- [ ] [L21](../docs/roadmap.md#L21): [ ] Write and review the Spanish fallback line (`languages.other_language_line`). This is still TODO(me) from Phase 3, and needs a fluent reviewer.
-- [ ] [L33](../docs/roadmap.md#L33): [ ] **A2P 10DLC registration** (US carrier registration for business texting): brand and campaign. VERIFY the current process.
-- [ ] [L34](../docs/roadmap.md#L34): [ ] **Consent records** for every contact: proof of opt-in under the TCPA (the US law on automated calls and texts) and state law. VERIFY with an attorney.
+- [ ] [L20](../docs/roadmap.md#L20): [ ] **First live test call** on a staging number: a normal call, then every emergency path, including a page nobody acknowledges. Needs the Twilio account. TODO(me)
+- [ ] [L21](../docs/roadmap.md#L21): [ ] Start A2P 10DLC registration with Twilio now. It takes calendar time. TODO(me)
+- [ ] [L29](../docs/roadmap.md#L29): [ ] Write and review the Spanish fallback line (`languages.other_language_line`). This is still TODO(me) from Phase 3, and needs a fluent reviewer.
+- [ ] [L41](../docs/roadmap.md#L41): [ ] **A2P 10DLC registration** (US carrier registration for business texting): brand and campaign. VERIFY the current process.
+- [ ] [L42](../docs/roadmap.md#L42): [ ] **Consent records** for every contact: proof of opt-in under the TCPA (the US law on automated calls and texts) and state law. VERIFY with an attorney.
 
 ## Decisions
 

@@ -136,7 +136,7 @@ These must be resolved before **any real client goes live**. Each is also in the
 4. **Retention periods** (`data.retention_days` default, `MAX_RETENTION_DAYS`, log retention).
 5. **Security contact:** replace `[EMAIL]` in `SECURITY.md`.
 6. **A2P 10DLC registration with Twilio**: decided (treat as required), **not yet started**. Start now, since review takes calendar time (`docs/decisions/0001-twilio-and-a2p-10dlc.md`).
-7. **Twilio chosen as voice and SMS platform.** Still to build: the voice adapter, plus real tool implementations with confirmed-delivery paging, retry, and backup (`docs/roadmap.md` section 1).
+7. **First live test call.** The voice adapter, the tools, and confirmed-delivery paging with retry and backup are built but have only run against fakes. Test them on a staging Twilio number, including every emergency path, before any client (`docs/roadmap.md` section 1).
 8. **Branch protection and the required CI check** on GitHub (manual, see the Phase 1 notes).
 """
 
