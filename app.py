@@ -15,16 +15,19 @@ Twilio requires HTTPS for production webhooks.
 
 from __future__ import annotations
 
+import asyncio
 import os
 from pathlib import Path
 
 from fastapi import FastAPI, Form, Request, Response
 from fastapi.responses import PlainTextResponse
 
+from backend import paging
 from backend.adapters.twilio_voice_adapter import (
     error_twiml,
     greeting_twiml,
     hangup_twiml,
+    page_ack_twiml,
     turn_twiml,
     validate_signature,
 )
@@ -80,6 +83,8 @@ async def incoming_call(
     if not _verify(request, form):
         return PlainTextResponse("Forbidden", status_code=403)
 
+    paging.remember_base_url(str(request.base_url))
+
     config_path = _CLIENTS_DIR / client_id / "config.yaml"
     if not config_path.exists():
         return _xml(error_twiml())
@@ -131,7 +136,9 @@ async def call_turn(
         )
 
     try:
-        reply_text, should_hangup = session.process_turn(SpeechResult)
+        # Off the event loop, so one caller's LLM turn never stalls other
+        # callers or a page acknowledgement.
+        reply_text, should_hangup = await asyncio.to_thread(session.process_turn, SpeechResult)
     except Exception:
         return _xml(error_twiml())
 
@@ -159,6 +166,25 @@ async def call_status(
     if CallStatus in terminal:
         _sessions.pop(CallSid, None)
     return Response(status_code=204)
+
+
+# ---------------------------------------------------------------------------
+# Emergency page acknowledgement (the on-call person pressed a key)
+# ---------------------------------------------------------------------------
+
+@app.post("/page/{page_id}/ack")
+async def page_ack(
+    page_id: str,
+    request: Request,
+    Digits: str = Form(default=""),
+):
+    form = dict(await request.form())
+    if not _verify(request, form):
+        return PlainTextResponse("Forbidden", status_code=403)
+
+    if Digits.strip() == "1":
+        return _xml(page_ack_twiml(paging.acknowledge(page_id)))
+    return _xml(page_ack_twiml(False, retry_url=str(request.url)))
 
 
 # ---------------------------------------------------------------------------

@@ -13,14 +13,15 @@ Safety properties that MUST stay true:
 from __future__ import annotations
 
 import json
+import logging
 import os
-import smtplib
-import socket
-import time
 import uuid
 from datetime import datetime, timezone
-from email.message import EmailMessage
 from pathlib import Path
+
+from backend import paging
+
+log = logging.getLogger("callcatch.tools")
 
 _DATA_ROOT = Path(os.environ.get("CALLCATCH_DATA_DIR", Path.home() / ".callcatch" / "calls"))
 
@@ -55,103 +56,14 @@ def execute_save_message(args: dict, config: dict, call_sid: str) -> str:
 
 def execute_notify_owner(args: dict, config: dict, call_sid: str) -> str:
     """
-    Send a summary to the owner via SMS (Twilio) and email (SMTP).
+    Start the owner summary and, for emergencies, the paging chain.
 
-    Recipients come ONLY from config["notifications"]. The model cannot
-    supply or override them.
+    Returns immediately so the caller never hears dead air; delivery happens in
+    the background (backend/paging.py). Recipients come ONLY from config.
 
-    Returns "delivered", "pending", or "failed".
+    Returns "delivered" (confirmed for this call), "pending", or "failed".
     """
-    priority: str = args.get("priority", "normal")
-    summary: str = args.get("summary", "(no summary)")
-    client_id = config.get("client_id", "unknown")
-    notif = config.get("notifications", {})
-
-    sms_to: str | None = notif.get("sms_to")
-    email_to: str | None = notif.get("email_to")
-    business_name: str = config.get("business", {}).get("name", "your business")
-
-    if not sms_to and not email_to:
-        return "failed: no notification contacts configured"
-
-    tag = "[URGENT] " if priority == "emergency" else ""
-    subject = f"{tag}CallCatch message for {business_name}"
-    body = (
-        f"New message for {business_name}\n"
-        f"Call ID: {call_sid}\n"
-        f"Priority: {priority.upper()}\n"
-        f"Time: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}\n\n"
-        f"{summary}"
-    )
-
-    delivered_count = 0
-    failed_count = 0
-
-    if sms_to:
-        result = _send_sms(sms_to, body[:1600])
-        if result:
-            delivered_count += 1
-        else:
-            failed_count += 1
-
-    if email_to:
-        result = _send_email(email_to, subject, body)
-        if result:
-            delivered_count += 1
-        else:
-            failed_count += 1
-
-    total = (1 if sms_to else 0) + (1 if email_to else 0)
-    if delivered_count == total:
-        return "delivered"
-    if delivered_count > 0:
-        return "pending"
-    return "failed"
-
-
-def _send_sms(to: str, body: str) -> bool:
-    try:
-        from twilio.rest import Client as TwilioClient
-        account_sid = os.environ.get("TWILIO_ACCOUNT_SID", "")
-        auth_token = os.environ.get("TWILIO_AUTH_TOKEN", "")
-        from_number = os.environ.get("NOTIFY_SMS_FROM", "")
-        if not (account_sid and auth_token and from_number):
-            return False
-        client = TwilioClient(account_sid, auth_token)
-        msg = client.messages.create(to=to, from_=from_number, body=body)
-        for _ in range(6):
-            time.sleep(2)
-            fetched = client.messages(msg.sid).fetch()
-            if fetched.status in ("delivered", "sent"):
-                return True
-            if fetched.status in ("failed", "undelivered"):
-                return False
-        return False
-    except Exception:
-        return False
-
-
-def _send_email(to: str, subject: str, body: str) -> bool:
-    try:
-        smtp_host = os.environ.get("SMTP_HOST", "")
-        smtp_port = int(os.environ.get("SMTP_PORT", "587"))
-        smtp_user = os.environ.get("SMTP_USER", "")
-        smtp_pass = os.environ.get("SMTP_PASS", "")
-        from_addr = os.environ.get("NOTIFY_EMAIL_FROM", smtp_user)
-        if not (smtp_host and smtp_user and smtp_pass):
-            return False
-        msg = EmailMessage()
-        msg["Subject"] = subject
-        msg["From"] = from_addr
-        msg["To"] = to
-        msg.set_content(body)
-        with smtplib.SMTP(smtp_host, smtp_port, timeout=10) as s:
-            s.starttls()
-            s.login(smtp_user, smtp_pass)
-            s.send_message(msg)
-        return True
-    except (smtplib.SMTPException, socket.error, OSError):
-        return False
+    return paging.dispatch(args, config, call_sid)
 
 
 # ---------------------------------------------------------------------------
@@ -181,8 +93,10 @@ def execute_check_or_book_slot(args: dict, config: dict, call_sid: str) -> str:
             credentials_file=credentials_file,
             config=config,
         )
-    except Exception as e:
-        return f"Booking check failed: {e}"
+    except Exception:
+        # Details stay in our logs; the model could read them out to the caller.
+        log.exception("booking failed client=%s call=%s", config.get("client_id"), call_sid)
+        return "Booking isn't available right now."
 
 
 def _gcal_check_or_book(
@@ -272,5 +186,6 @@ def run_tool(name: str, arguments: dict, config: dict, call_sid: str) -> str:
         return f"Unknown tool: {name}"
     try:
         return fn(arguments, config, call_sid)
-    except Exception as e:
-        return f"Tool error: {e}"
+    except Exception:
+        log.exception("tool %s failed client=%s call=%s", name, config.get("client_id"), call_sid)
+        return "Tool error: the system couldn't complete this step."

@@ -99,19 +99,60 @@ def error_twiml() -> str:
     return _twiml(response)
 
 
+def page_twiml(message: str, ack_url: str | None) -> str:
+    """
+    TwiML for an outbound emergency page to the on-call person.
+
+    The page counts only when they press 1, which posts to ack_url. A voicemail
+    or an unanswered call never presses 1, so it never counts. With no ack_url
+    the message is still read out, but the page can't be confirmed.
+    """
+    response = ET.Element("Response")
+    parent = response
+    if ack_url:
+        parent = ET.SubElement(
+            response, "Gather",
+            input="dtmf", numDigits="1", action=ack_url, method="POST", timeout="10",
+        )
+    for _ in range(2):
+        _say(parent, message[:600])
+        if ack_url:
+            _say(parent, "Press 1 to acknowledge this page.")
+    _say(response, "No acknowledgement received. Goodbye.")
+    return _twiml(response)
+
+
+def page_ack_twiml(acknowledged: bool, retry_url: str | None = None) -> str:
+    """Reply to a key press on an emergency page."""
+    response = ET.Element("Response")
+    if acknowledged:
+        _say(response, "Acknowledged. Thank you. The details are also in your messages.")
+    elif retry_url:
+        gather = ET.SubElement(
+            response, "Gather",
+            input="dtmf", numDigits="1", action=retry_url, method="POST", timeout="10",
+        )
+        _say(gather, "Press 1 to acknowledge this page.")
+    else:
+        _say(response, "This page has expired. The team is being contacted another way.")
+    ET.SubElement(response, "Hangup")
+    return _twiml(response)
+
+
 def validate_signature(request_url: str, post_params: dict, signature: str) -> bool:
     """
     Verify that a webhook request actually came from Twilio.
 
-    Set TWILIO_WEBHOOK_SECRET (auth token) in .env.
-    Returns True when the signature matches, or when validation is disabled
-    (TWILIO_SKIP_VALIDATION=1) for local development.
+    Uses TWILIO_AUTH_TOKEN from .env. Fails closed: with no token, every
+    request is rejected, because a forged page acknowledgement would stop an
+    emergency escalation. Only TWILIO_SKIP_VALIDATION=1 (local development)
+    turns the check off.
     """
     if os.environ.get("TWILIO_SKIP_VALIDATION", "").strip() == "1":
         return True
     auth_token = os.environ.get("TWILIO_AUTH_TOKEN", "")
     if not auth_token:
-        return True
+        return False
     try:
         from twilio.request_validator import RequestValidator
         return RequestValidator(auth_token).validate(request_url, post_params, signature)

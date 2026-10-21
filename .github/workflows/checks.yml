@@ -39,6 +39,9 @@ jobs:
       - name: Config validator proof tests
         run: python -m unittest tests/test_validate_config.py -v
 
+      - name: Emergency paging chain (fakes only, no network)
+        run: python -m unittest tests/test_paging.py -v
+
       - name: Prompt and call-flow safety wording match
         run: python tests/check_prompt_sync.py
 
