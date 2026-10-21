@@ -42,6 +42,11 @@ jobs:
       - name: Emergency paging chain (fakes only, no network)
         run: python -m unittest tests/test_paging.py -v
 
+      - name: Webhook server exposes only what it should (no network)
+        run: |
+          pip install fastapi httpx python-multipart
+          python -m unittest tests/test_app.py -v
+
       - name: Prompt and call-flow safety wording match
         run: python tests/check_prompt_sync.py
 

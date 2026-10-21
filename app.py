@@ -16,6 +16,7 @@ Twilio requires HTTPS for production webhooks.
 from __future__ import annotations
 
 import asyncio
+import hmac
 import os
 from pathlib import Path
 
@@ -192,5 +193,13 @@ async def page_ack(
 # ---------------------------------------------------------------------------
 
 @app.get("/health")
-async def health():
-    return {"status": "ok", "active_calls": len(_sessions)}
+async def health(request: Request):
+    """
+    Public: liveness only, for uptime monitors. With HEALTH_TOKEN set and sent
+    as "Authorization: Bearer <token>", it also reports the active call count.
+    """
+    token = os.environ.get("HEALTH_TOKEN", "")
+    auth = request.headers.get("Authorization", "")
+    if token and hmac.compare_digest(auth.encode(), f"Bearer {token}".encode()):
+        return {"status": "ok", "active_calls": len(_sessions)}
+    return {"status": "ok"}
