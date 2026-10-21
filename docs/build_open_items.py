@@ -34,6 +34,7 @@ PHASES = OrderedDict([
     ("Phase 7: Service agreement", ["docs/service-agreement-outline.md"]),
     ("Phase 8: Unit economics", ["docs/unit_economics.py", "docs/templates/", "docs/build_unit_economics_doc.py"]),
     ("Phase 9: Architecture, monitoring, roadmap", ["docs/architecture.md", "docs/monitoring.md", "docs/roadmap.md", "infra/"]),
+    ("Decisions", ["docs/decisions/"]),
 ])
 
 MARKER = re.compile(r"TODO\(me\)|VERIFY")
@@ -134,8 +135,8 @@ These must be resolved before **any real client goes live**. Each is also in the
 3. **Default storage choice** (audio and/or transcripts). It drives the greeting's recording notice.
 4. **Retention periods** (`data.retention_days` default, `MAX_RETENTION_DAYS`, log retention).
 5. **Security contact:** replace `[EMAIL]` in `SECURITY.md`.
-6. **SMS sender registration** for owner notifications (VERIFY, `docs/safety-and-compliance.md` section 4).
-7. **Voice platform chosen**, plus real tool implementations with confirmed-delivery paging, retry, and backup (`docs/roadmap.md` section 1).
+6. **A2P 10DLC registration with Twilio**: decided (treat as required), **not yet started**. Start now, since review takes calendar time (`docs/decisions/0001-twilio-and-a2p-10dlc.md`).
+7. **Twilio chosen as voice and SMS platform.** Still to build: the voice adapter, plus real tool implementations with confirmed-delivery paging, retry, and backup (`docs/roadmap.md` section 1).
 8. **Branch protection and the required CI check** on GitHub (manual, see the Phase 1 notes).
 """
 

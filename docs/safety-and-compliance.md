@@ -82,9 +82,10 @@ automated calls and texts to consumers. VERIFY all points with an attorney.
 - **Owner notifications** (texts or emails to the business owner about their own
   calls) go to a business contact who asked for them. We record the owner's
   written opt-in during onboarding. VERIFY whether any consent formalities apply.
-  VERIFY: sending business SMS in the US, even to owners who opted in, generally
-  requires a registered sender (10DLC or toll-free verification) with the
-  messaging provider. Confirm before the first pilot.
+  **Decision: we register for A2P 10DLC regardless**, treating it as required
+  for owner texts rather than waiting to find out (`docs/decisions/0001-twilio-and-a2p-10dlc.md`).
+  Email stays a second channel for every client. VERIFY: the registration steps,
+  fees, and review times with Twilio.
 - **We do NOT send automated texts or calls to callers in version 1.** No
   "thanks for calling" texts, no reminders. A confirmation text to a consumer is
   outbound automated contact, and it can bring in TCPA consent rules and US
@@ -138,6 +139,13 @@ ID when the carrier provides it.
 | Owner notifications | The owner's phone and inbox | Out of our control | Explained to the owner at onboarding |
 
 - If a client's agreement sets a shorter period, the shorter period wins.
+- **How automatic expiry works today:** `backend/retention.py` runs when the
+  server starts and then hourly. It deletes each call's saved data (summary and
+  page log) once the call's newest file is older than that client's
+  `data.retention_days`. If a client's config is missing or invalid, it uses
+  `MAX_RETENTION_DAYS`, so data is never deleted early and never kept past the
+  maximum. Run `python -m backend.retention --dry-run` to see what it would delete.
+  This covers only our own store. Vendor-side logs (row above) need each vendor's settings.
 - Transcripts and audio can contain incidental sensitive details a caller
   volunteered, such as health information or card numbers. These follow the same
   retention limits as the rest of the transcript, with no exceptions (see

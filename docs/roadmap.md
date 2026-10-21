@@ -9,9 +9,11 @@ outline, unit economics, and CI.
 
 Still to do before the first pilot:
 - [ ] Clear the blocking items in `docs/open-items.md` (attorney review, safety review of the Tier 1 wording, storage defaults)
-- [ ] Choose a voice platform and build the voice adapter (`docs/architecture.md`)
+- [x] Choose a voice platform: **Twilio** (`docs/decisions/0001-twilio-and-a2p-10dlc.md`)
+- [ ] Build the Twilio voice adapter (`docs/architecture.md`)
 - [ ] Build the real tool implementations: `save_message`, `notify_owner` (with confirmed delivery, retry, and backup), `check_or_book_slot`
-- [ ] Set up the notification senders. VERIFY: SMS sender registration requirements.
+- [ ] Start A2P 10DLC registration with Twilio now. It takes calendar time. TODO(me)
+- [ ] Build the Twilio SMS adapter and the SMS half of `notify_owner`. Email stays a second channel.
 - [ ] Monitoring and alerts (`docs/monitoring.md`), starting with the emergency path
 - [ ] Staging number, then one pilot client via `docs/onboarding.md`
 

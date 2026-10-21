@@ -2,3 +2,13 @@
 pyyaml        # reads the YAML scenario and config files
 pre-commit    # runs the gitleaks secret scan on every commit
 anthropic     # official Anthropic SDK, only needed for LIVE test runs (not --dry-run or the stub)
+
+# Web server and voice
+fastapi>=0.110.0      # webhook server
+uvicorn[standard]     # ASGI server to run FastAPI
+python-multipart      # lets FastAPI read Twilio's form-encoded webhooks
+twilio>=9.0.0         # Twilio voice webhooks, TwiML, SMS, signature validation
+
+# Optional: Google Calendar integration (booking)
+# google-auth>=2.0.0
+# google-api-python-client>=2.0.0
