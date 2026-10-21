@@ -69,15 +69,37 @@ See `docs/architecture.md` for the full pipeline and `docs/call-flow.md` for exa
 
 ## Status
 
-This is a working design with enforced safety rules and a full test harness — **not yet connected to a real phone line or a live model.** See `docs/open-items.md` for what's left before any real client goes live, starting with attorney review of the service agreement and expert review of the emergency wording.
+**The call path is built, but it has never handled a real phone call.** Everything below runs only against test fakes so far. It is not ready for a client.
+
+**Built, tested with fakes, not yet on a real call:**
+- The Twilio webhook server (`app.py`): answers, takes turns, ends the call.
+- The three tools: saving the message, notifying the owner, and calendar booking.
+- Emergency paging in the background, so the caller never waits. It voice-pages the on-call number (press 1 to acknowledge), retries, then the backup number, then texts, and alerts us at every failed step. Only a confirmed delivery counts as success.
+- Automatic deletion of saved call data after each client's retention period.
+- The safety rules, the fail-closed config validator, 41 call scenarios, and CI.
+
+**Not built yet:**
+- A voicemail fallback that works even when our server is down. Today a failure ends the call with "please call back".
+- Monitoring: a daily test emergency call and uptime alerts.
+- A database and durable job queue. A server restart today loses calls and pages in progress.
+- Correct time zones in calendar booking.
+
+**Blocking any pilot (not code):**
+- A first live test call on a staging number, including the emergency path.
+- Attorney review of the service agreement, the recording notice, and the emergency-paging liability terms.
+- Safety-expert review of the six emergency instructions.
+- A2P 10DLC carrier registration for texts. It takes weeks and hasn't started.
+
+The full list is in `docs/roadmap.md` and `docs/open-items.md`.
 
 ---
 
 ## Project structure
 
 ```
+app.py              the Twilio webhook server
 prompts/           the model's fixed instructions
-backend/            config schema, validator, tool definitions, adapters
+backend/            config schema, validator, tools, paging, retention, adapters
 clients/            one config file per business (real contact info kept separate and gitignored)
 tests/              scenario suite, drift checks, validator tests
 docs/               call flow, safety & compliance, onboarding/offboarding, service agreement outline, unit economics

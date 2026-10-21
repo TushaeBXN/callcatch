@@ -7,14 +7,22 @@ Done in this repo: call flow, safety prompt, 41 test scenarios and the runner,
 the fail-closed config validator, onboarding and offboarding, the agreement
 outline, unit economics, and CI.
 
+**Built** below means the code exists and passes its tests against fakes.
+**None of it has handled a real phone call yet.** That's the first unchecked item.
+
 Still to do before the first pilot:
 - [ ] Clear the blocking items in `docs/open-items.md` (attorney review, safety review of the Tier 1 wording, storage defaults)
 - [x] Choose a voice platform: **Twilio** (`docs/decisions/0001-twilio-and-a2p-10dlc.md`)
-- [ ] Build the Twilio voice adapter (`docs/architecture.md`)
-- [ ] Build the real tool implementations: `save_message`, `notify_owner` (with confirmed delivery, retry, and backup), `check_or_book_slot`
+- [x] **Built:** the Twilio voice adapter and webhook server (`app.py`, `backend/adapters/twilio_voice_adapter.py`)
+- [x] **Built:** real tool implementations: `save_message`, `notify_owner` (confirmed delivery, retry, backup, and operator alerts in `backend/paging.py`), `check_or_book_slot`
+- [x] **Built:** the Twilio SMS adapter and the SMS half of `notify_owner`. Email stays a second channel.
+- [x] **Built:** automatic deletion of saved call data per `data.retention_days` (`backend/retention.py`)
+- [ ] **First live test call** on a staging number: a normal call, then every emergency path, including a page nobody acknowledges. Needs the Twilio account. TODO(me)
 - [ ] Start A2P 10DLC registration with Twilio now. It takes calendar time. TODO(me)
-- [ ] Build the Twilio SMS adapter and the SMS half of `notify_owner`. Email stays a second channel.
-- [ ] Monitoring and alerts (`docs/monitoring.md`), starting with the emergency path
+- [ ] Voicemail fallback that works even when our server is down (a Twilio fallback URL that records a message)
+- [ ] Monitoring and alerts (`docs/monitoring.md`), starting with the emergency path: a daily test emergency call
+- [ ] A database and durable job queue in place of in-memory sessions, local files, and in-process paging jobs
+- [ ] Fix calendar booking: slots in the business's time zone, not UTC, and correct end times
 - [ ] Staging number, then one pilot client via `docs/onboarding.md`
 
 ## 2. Bilingual support (Spanish)
